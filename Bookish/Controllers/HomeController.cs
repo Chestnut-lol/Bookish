@@ -204,6 +204,22 @@ public class HomeController : Controller
         return View();
     }
     
+    public async Task<ActionResult> Catalogue()
+    {
+        //string memberId = member.MemberId;
+        
+        
+        var AllBooksList = _dbContext.Books.ToList();
+        if (AllBooksList != null)
+        {
+            return View(AllBooksList);
+        }
+        
+        List<Book> EmptyBookList = new List<Book>();
+        return View(EmptyBookList);
+    }
+
+    
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
