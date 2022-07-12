@@ -27,6 +27,16 @@ public class HomeController : Controller
     [HttpGet]
     public async Task<ActionResult> BookQuery(BookSelection selection)
     {
+        string bookId = selection.Id;
+        using (var context = new EFCore())
+        {
+            var books = context.Books.Where(x => x.Id == bookId).ToList();
+            foreach (var book in books)
+            {
+                Console.WriteLine($"Here is your book with the Id {bookId}");
+                Console.WriteLine(book.Id);
+            }
+        }
         return View();
     }
     
