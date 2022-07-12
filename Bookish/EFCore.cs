@@ -8,6 +8,7 @@ public class EFCore : DbContext
 {
     //public DbSet<BookInfo> Books { get; set; }
     public DbSet<Member> Members { get; set; }
+    public DbSet<Book> Books { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     { 
