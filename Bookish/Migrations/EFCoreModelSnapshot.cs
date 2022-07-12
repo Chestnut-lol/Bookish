@@ -36,6 +36,9 @@ namespace Bookish.Migrations
                     b.Property<int>("NumOfCopies")
                         .HasColumnType("int");
 
+                    b.Property<int>("NumOfSearches")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -51,7 +54,6 @@ namespace Bookish.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("BookId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MemberId")
@@ -80,9 +82,7 @@ namespace Bookish.Migrations
                 {
                     b.HasOne("Bookish.Models.Book", "Book")
                         .WithMany("Copies")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BookId");
 
                     b.HasOne("Bookish.Models.Member", "Member")
                         .WithMany("Books")

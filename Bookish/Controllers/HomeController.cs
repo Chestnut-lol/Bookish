@@ -78,6 +78,8 @@ public class HomeController : Controller
                 .Include(b => b.Copies)
                 .Include("Copies.Member")
                 .ToList()[0];
+            book.NumOfSearches += 1;
+            _dbContext.SaveChanges();
         }
         return View(book);
     }
@@ -207,16 +209,17 @@ public class HomeController : Controller
     public async Task<ActionResult> Catalogue()
     {
         //string memberId = member.MemberId;
+
+        var AllBooksList = new ListOfBooks();
+        AllBooksList.AllBooks = _dbContext.Books.ToList().OrderBy(x => x.NumOfSearches).ToList();
+        AllBooksList.AllBooks = Enumerable.Reverse(AllBooksList.AllBooks).ToList();
         
-        
-        var AllBooksList = _dbContext.Books.ToList();
         if (AllBooksList != null)
         {
             return View(AllBooksList);
         }
         
-        List<Book> EmptyBookList = new List<Book>();
-        return View(EmptyBookList);
+        return View(AllBooksList);
     }
 
     
