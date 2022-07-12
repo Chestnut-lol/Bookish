@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Mvc.ModelBinding.Binders
+@model Bookish.Models.Member
+
+@{
+    ViewBag.Title = "Member Query Display";
+}
+<meta charset="UTF-8"></meta>
+<h2>Book Info &#128512</h2>
+
+<div class="row">
+    <p>You searched for the member with ID: @Model.MemberId</p>
+    
+    
+    <table style="width:100%">
+        <tr>
+            <th>ISBN</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Number of total copies</th>
+            <th>Number of available copies</th>
+        </tr>
+        
+        @{
+            foreach (var book in Model.Books)
+            {
+                <tr>
+                    <td>@book.Id</td>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@book.NumOfCopies</td>
+                    <td>@book.NumOfAvailableCopies</td>
+                </tr>
+            }
+        }
+            
+    </table>
+    <p></p>
+    
+  
+</div>

@@ -1,0 +1,26 @@
+﻿
+@model Bookish.Models.Member
+@{
+    ViewBag.Title = "Member Search";
+}
+
+<div class="jumbotron">
+    <h1>Bookish</h1>
+    <p class="lead">For all your book needs. Enter a ISBN below and click enter to see book details.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("BookQuery", "Home", FormMethod.Get))
+        {
+            <fieldset>
+                <legend>Enter Member ID:</legend>
+                @Html.TextBoxFor(m => m.MemberId) @*new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
+                *@
+                <input type="submit" value="Search" />
+                
+            </fieldset>
+        }
+    </div>
+</div>
+

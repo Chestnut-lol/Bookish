@@ -27,6 +27,25 @@ public class HomeController : Controller
     {
         return View();
     }
+    public IActionResult MemberSearch()
+    {
+        return View();
+    }
+    public async Task<ActionResult> MemberQuery(Member member)
+    {
+        string memberId = member.MemberId;
+        
+        using (var context = new EFCore())
+        {
+            member = context.Members.Find(memberId);
+            if (member != null)
+            {
+                return View(member);
+            }
+        }
+        Member resultMember = new Member();
+        return View(resultMember);
+    }
 
 
     [HttpGet]
@@ -42,12 +61,6 @@ public class HomeController : Controller
             }
             
         }
-        /*else if (selection.Author != null)
-        {
-            SearchBookByAuthor(selection.Author);
-        }*/
-        
-        
         return View(book);
     }
 
