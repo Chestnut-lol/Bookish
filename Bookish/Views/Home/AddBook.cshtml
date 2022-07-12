@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Add Book";
+}
+@model Bookish.Models.BookInput
+<div class="jumbotron">
+    <p class="lead">Input a book with information below</p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("BookInput", "Home", FormMethod.Get))
+        {
+            <fieldset>
+                <legend>Input ISBN:</legend>
+                @Html.TextBoxFor(m => m.Id) @*new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
+                *@
+                <p></p>
+                <legend>Input Author:</legend>
+                @Html.TextBoxFor(m => m.Author) @*new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
+                *@
+                <p></p>
+                <legend>Input Author:</legend>
+                @Html.TextBoxFor(m => m.Title) @*new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
+                *@
+
+                <input type="submit" value="Input Book Info" />
+            </fieldset>
+        }
+    </div>
+</div>

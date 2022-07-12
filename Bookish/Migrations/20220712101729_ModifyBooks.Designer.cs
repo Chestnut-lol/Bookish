@@ -3,6 +3,7 @@ using Bookish;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookish.Migrations
 {
     [DbContext(typeof(EFCore))]
-    partial class EFCoreModelSnapshot : ModelSnapshot
+    [Migration("20220712101729_ModifyBooks")]
+    partial class ModifyBooks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,11 +32,9 @@ namespace Bookish.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NumOfAvailableCopies")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumOfCopies")
-                        .HasColumnType("int");
+                    b.Property<string>("NumOfCopies")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -45,22 +45,6 @@ namespace Bookish.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("Bookish.Models.BookCopy", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("BookId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("BookCopy");
-                });
-
             modelBuilder.Entity("Bookish.Models.Member", b =>
                 {
                     b.Property<string>("MemberId")
@@ -69,22 +53,6 @@ namespace Bookish.Migrations
                     b.HasKey("MemberId");
 
                     b.ToTable("Members");
-                });
-
-            modelBuilder.Entity("Bookish.Models.BookCopy", b =>
-                {
-                    b.HasOne("Bookish.Models.Book", "Book")
-                        .WithMany("Copies")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("Bookish.Models.Book", b =>
-                {
-                    b.Navigation("Copies");
                 });
 #pragma warning restore 612, 618
         }
