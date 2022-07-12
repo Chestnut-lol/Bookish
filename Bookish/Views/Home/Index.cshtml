@@ -1,8 +1,25 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+@model Bookish.Models.BookSelection
+@{
+    ViewBag.Title = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="jumbotron">
+    <h1>Bookish</h1>
+    <p class="lead">For all your book needs. Enter a ISBN below and click enter to see book details.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("BookQuery", "Home", FormMethod.Get))
+        {
+            <fieldset>
+                <legend>ISBN:</legend>
+                @Html.TextBoxFor(m => m.Id) @*new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
+                *@
+
+                <input type="submit" value="Get Book Info" />
+            </fieldset>
+        }
+    </div>
 </div>
