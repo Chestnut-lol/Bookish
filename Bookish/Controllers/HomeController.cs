@@ -82,8 +82,13 @@ public class HomeController : Controller
         {
             if (selection.BookCopyId != null)
             {
-                bookCopy = _dbContext.BookCopies.Find(selection.BookCopyId);
+                bookCopy = _dbContext.BookCopies
+                    .Where(b=>b.Id == selection.BookCopyId)
+                    .Include("Member")
+                    .Include("Book")
+                    .ToList()[0];
                 bookCopy.Member = _dbContext.Members.Find(selection.MemberId);
+                bookCopy.Book.NumOfAvailableCopies -= 1;
                 _dbContext.SaveChanges();
             }
         }
