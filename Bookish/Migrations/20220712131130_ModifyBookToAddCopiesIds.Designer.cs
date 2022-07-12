@@ -3,6 +3,7 @@ using Bookish;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookish.Migrations
 {
     [DbContext(typeof(EFCore))]
-    partial class EFCoreModelSnapshot : ModelSnapshot
+    [Migration("20220712131130_ModifyBookToAddCopiesIds")]
+    partial class ModifyBookToAddCopiesIds
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,20 +52,21 @@ namespace Bookish.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("BookId")
+                    b.Property<string>("MemberId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("MemberId")
+                    b.Property<string>("bookId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId");
-
                     b.HasIndex("MemberId");
 
-                    b.ToTable("BookCopies");
+                    b.HasIndex("bookId");
+
+                    b.ToTable("BookCopy");
                 });
 
             modelBuilder.Entity("Bookish.Models.Member", b =>
@@ -78,24 +81,21 @@ namespace Bookish.Migrations
 
             modelBuilder.Entity("Bookish.Models.BookCopy", b =>
                 {
-                    b.HasOne("Bookish.Models.Book", "Book")
-                        .WithMany("Copies")
-                        .HasForeignKey("BookId")
+                    b.HasOne("Bookish.Models.Member", "Member")
+                        .WithMany("Books")
+                        .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Bookish.Models.Member", "Member")
-                        .WithMany("Books")
-                        .HasForeignKey("MemberId");
-
-                    b.Navigation("Book");
+                    b.HasOne("Bookish.Models.Book", "book")
+                        .WithMany()
+                        .HasForeignKey("bookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Member");
-                });
 
-            modelBuilder.Entity("Bookish.Models.Book", b =>
-                {
-                    b.Navigation("Copies");
+                    b.Navigation("book");
                 });
 
             modelBuilder.Entity("Bookish.Models.Member", b =>

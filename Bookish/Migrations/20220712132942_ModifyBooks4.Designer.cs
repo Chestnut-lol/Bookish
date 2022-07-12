@@ -3,6 +3,7 @@ using Bookish;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookish.Migrations
 {
     [DbContext(typeof(EFCore))]
-    partial class EFCoreModelSnapshot : ModelSnapshot
+    [Migration("20220712132942_ModifyBooks4")]
+    partial class ModifyBooks4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,6 +57,7 @@ namespace Bookish.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MemberId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -63,7 +66,7 @@ namespace Bookish.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("BookCopies");
+                    b.ToTable("BookCopy");
                 });
 
             modelBuilder.Entity("Bookish.Models.Member", b =>
@@ -86,7 +89,9 @@ namespace Bookish.Migrations
 
                     b.HasOne("Bookish.Models.Member", "Member")
                         .WithMany("Books")
-                        .HasForeignKey("MemberId");
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Book");
 

@@ -63,6 +63,21 @@ public class HomeController : Controller
         }
         return View(book);
     }
+   
+    /*public async Task<ActionResult> CheckoutBook(CheckoutSelection selection)
+    {
+        Book book = new Book();
+        if (selection.BookCopyId != null)
+        {
+            using (var context = new EFCore())
+            {
+                book = context.BookCopy.Where(x => x.Id == selection.BookCopyId).ToList()[0];
+                
+            }
+            
+        }
+        return View(book);
+    }*/
 
     /*private BookInfo SearchBookByAuthor(string author)
     {

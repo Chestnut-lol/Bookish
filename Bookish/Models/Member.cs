@@ -3,5 +3,5 @@ namespace Bookish.Models;
 public class Member
 {
     public string MemberId { get; set; }
-    public ICollection<Book> Books { get; set; }
+    public virtual List<BookCopy> Books { get; set; }
 }
