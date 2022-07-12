@@ -25,9 +25,9 @@ public class HomeController : Controller
 
 
     [HttpGet]
-    public async Task<ActionResult> BookQuery(BookSelection selection)
+    public async Task<ActionResult> BookInput(BookSelection selection)
     {
-        return View(Index());
+        return View();
     }
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
