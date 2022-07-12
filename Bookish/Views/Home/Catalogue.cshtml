@@ -6,7 +6,7 @@
 }
 <meta charset="UTF-8"></meta>
 <h2>Library's Catalogue Display &#128512</h2>
-<h3>In order of most searched</h3>
+<h4>(In order of most searched)</h4>
 
 <div class="row">
 
@@ -17,7 +17,7 @@
             <th>Author</th>
             <th>Number of total copies</th>
             <th>Number of available copies</th>
-            <th>Member ID associated</th>
+            <th>Number of searches</th>
         </tr>
         
         @{
@@ -32,6 +32,11 @@
                         <td>@bookCopy.Author</td>
                         <td>@bookCopy.NumOfCopies</td>
                         <td>@bookCopy.NumOfAvailableCopies</td>
+                        <td>@bookCopy.NumOfSearches</td>
+                        <td><button class="editbtn">Edit</button></td>
+                        <td><li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Edit</a>
+                        </li></td>
                     </tr>
                 }
             }
