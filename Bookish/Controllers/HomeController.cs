@@ -25,7 +25,7 @@ public class HomeController : Controller
 
 
     [HttpGet]
-    public async Task<ActionResult> BookInput(BookSelection selection)
+    public async Task<ActionResult> BookQuery(BookSelection selection)
     {
         return View();
     }
