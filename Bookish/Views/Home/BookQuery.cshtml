@@ -1,7 +1,35 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@using Microsoft.AspNetCore.Mvc.ModelBinding.Binders
+@model Bookish.Models.Book
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+@{
+    ViewBag.Title = "Book Query Display";
+}
+<meta charset="UTF-8"></meta>
+<h2>Book Info &#128512</h2>
+
+<div class="row">
+    <p>You searched for the book with ISBN: @Model.Id</p>
+    
+    
+    <table style="width:100%">
+        <tr>
+            <th>ISBN</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Number of total copies</th>
+            <th>Number of available copies</th>
+        </tr>
+        
+        <tr>
+            <td>@Model.Id</td>
+            <td>@Model.Title</td>
+            <td>@Model.Author</td>
+            <td>@Model.NumOfCopies</td>
+            <td>@Model.NumOfAvailableCopies</td>
+        </tr>
+            
+    </table>
+    <p></p>
+    
+  
 </div>

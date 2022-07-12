@@ -32,20 +32,26 @@ public class HomeController : Controller
     [HttpGet]
     public async Task<ActionResult> BookQuery(BookSelection selection)
     {
+        Book book = new Book();
         if (selection.Id != null)
         {
-            SearchBookById(selection.Id);
+            using (var context = new EFCore())
+            {
+                book = context.Books.Where(x => x.Id == selection.Id).ToList()[0];
+                
+            }
+            
         }
-        else if (selection.Author != null)
+        /*else if (selection.Author != null)
         {
             SearchBookByAuthor(selection.Author);
-        }
+        }*/
         
         
-        return View();
+        return View(book);
     }
 
-    private void SearchBookByAuthor(string author)
+    /*private BookInfo SearchBookByAuthor(string author)
     {
         using (var context = new EFCore())
         {
@@ -60,21 +66,14 @@ public class HomeController : Controller
         }
     }
 
-    private void SearchBookById(string bookId)
+    private BookInfo SearchBookById(string bookId)
     {
         using (var context = new EFCore())
         {
-            var books = context.Books.Where(x => x.Id == bookId).ToList();
-            foreach (var book in books)
-            {
-                Console.WriteLine($"Here is your book with the Id {bookId}");
-                Console.WriteLine($"Book name: {book.Title}");
-                Console.WriteLine($"Author: {book.Author}");
-                Console.WriteLine($"Number of available copies: {book.NumOfCopies}");
-                
-            }
+            var book = context.Books.Where(x => x.Id == bookId).ToList()[0];
+            return new BookInfo(book.Id, book.Title, book.Author, book.NumOfCopies, book.NumOfAvailableCopies);
         }
-    }
+    }*/
 
 
     [HttpGet]

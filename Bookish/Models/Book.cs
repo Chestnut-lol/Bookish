@@ -7,5 +7,6 @@ public class Book
     public string Author { get; set; }
     public int NumOfCopies { get; set; }
     public int NumOfAvailableCopies { get; set; }
-    public virtual List<BookCopy> Copies { get; set; }
+    //public virtual List<BookCopy> Copies { get; set; }
+    public Member Member { get; set; }
 }
