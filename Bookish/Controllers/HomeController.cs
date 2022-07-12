@@ -40,6 +40,11 @@ public class HomeController : Controller
         return View();
     }
     
+    public IActionResult AddMember()
+    {
+        return View();
+    }
+    
     
     public async Task<ActionResult> MemberQuery(Member member)
     {
@@ -174,6 +179,27 @@ public class HomeController : Controller
                 Console.WriteLine($"Author: {book.Author}");
                 Console.WriteLine($"Number of available copies: {book.NumOfCopies}");
                 
+        }
+        return View();
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult> MemberInput(MemberInput input)
+    {
+        string memberId = input.Id;
+        using (var context = new EFCore())
+        {
+            var member = context.Members.Find(memberId);
+            if (member == null)
+            {
+                member = new Member()
+                {
+                    MemberId = memberId
+                };
+                context.Members.Add(member);
+                context.SaveChanges();
+
+            }
         }
         return View();
     }
