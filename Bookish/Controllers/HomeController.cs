@@ -39,6 +39,8 @@ public class HomeController : Controller
     {
         return View();
     }
+    
+    
     public async Task<ActionResult> MemberQuery(Member member)
     {
         string memberId = member.MemberId;
@@ -80,7 +82,7 @@ public class HomeController : Controller
         BookCopy bookCopy = new BookCopy();
         if (VerifyMemberId(selection.MemberId))
         {
-            if (selection.BookCopyId != null)
+            if (selection.BookCopyId != null && (_dbContext.BookCopies.Find(selection.BookCopyId) != null))
             {
                 bookCopy = _dbContext.BookCopies
                     .Where(b=>b.Id == selection.BookCopyId)
@@ -90,11 +92,21 @@ public class HomeController : Controller
                 bookCopy.Member = _dbContext.Members.Find(selection.MemberId);
                 bookCopy.Book.NumOfAvailableCopies -= 1;
                 _dbContext.SaveChanges();
+                return View("Index");
             }
+            else
+            {
+                return View("ErrorMsg",new ErrorMsgModel("Invalid Book ID"));
+            }
+            
+        }
+        else
+        {
+            return View("ErrorMsg",new ErrorMsgModel("Invalid Member ID"));
         }
 
-        Console.WriteLine("Done");
-        return View("Index");
+        
+        
     }
 
     /*private BookInfo SearchBookByAuthor(string author)
