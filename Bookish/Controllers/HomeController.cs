@@ -136,6 +136,7 @@ public class HomeController : Controller
             if (book != null)
             {
                 book.NumOfCopies += 1;
+                book.NumOfAvailableCopies += 1;
                 Console.WriteLine("Book found! Added another copy to the db.");
             }
             else
@@ -147,6 +148,7 @@ public class HomeController : Controller
                     Title = input.Title,
                     Author = input.Author,
                     NumOfCopies = 1,
+                    NumOfAvailableCopies = 1,
                 };
                 context.Books.Add(book);
             }
