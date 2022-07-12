@@ -1,16 +1,20 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Bookish.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookish.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly EFCore _dbContext;
+    
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, EFCore dbContext)
     {
         _logger = logger;
+        _dbContext = dbContext;
     }
 
     public IActionResult Index()
@@ -35,14 +39,13 @@ public class HomeController : Controller
     {
         string memberId = member.MemberId;
         
-        using (var context = new EFCore())
+        
+        member = _dbContext.Members.Find(memberId);
+        if (member != null)
         {
-            member = context.Members.Find(memberId);
-            if (member != null)
-            {
-                return View(member);
-            }
+            return View(member);
         }
+        
         Member resultMember = new Member();
         return View(resultMember);
     }
@@ -54,11 +57,14 @@ public class HomeController : Controller
         Book book = new Book();
         if (selection.Id != null)
         {
-            using (var context = new EFCore())
-            {
-                book = context.Books.Where(x => x.Id == selection.Id).ToList()[0];
-                
-            }
+            
+            book = _dbContext.Books
+                .Where(x => x.Id == selection.Id)
+                .Include(b => b.Copies)
+                .Include("Copies.Member")
+                .ToList()[0];
+            
+            
             
         }
         return View(book);

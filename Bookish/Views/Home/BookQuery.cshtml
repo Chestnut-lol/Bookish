@@ -18,6 +18,7 @@
             <th>Author</th>
             <th>Number of total copies</th>
             <th>Number of available copies</th>
+            <th>Member ID associated</th>
         </tr>
         
         <tr>
@@ -26,6 +27,7 @@
             <td>@Model.Author</td>
             <td>@Model.NumOfCopies</td>
             <td>@Model.NumOfAvailableCopies</td>
+            <td>@Model.Copies[0].Member.MemberId</td>
         </tr>
             
     </table>
