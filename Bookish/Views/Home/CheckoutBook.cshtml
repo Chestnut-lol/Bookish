@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Checkout Book";
+}
+@model Bookish.Models.CheckoutSelection
+<div class="jumbotron">
+    <p class="lead">Input a book with information below</p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("CheckoutBook", "Home", FormMethod.Get))
+        {
+            <fieldset>
+                <legend>Input your Member ID:</legend>
+ 
+                @Html.TextBoxFor(m => m.MemberId) @*new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
+                *@
+                <p></p>
+                <legend>Input your unique Book ID:</legend>
+                @Html.TextBoxFor(m => m.BookCopyId) @*new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
+                *@
+
+                <input type="submit" value="Checkout" />
+            </fieldset>
+        }
+    </div>
+</div>

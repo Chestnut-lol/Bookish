@@ -40,7 +40,11 @@ public class HomeController : Controller
         string memberId = member.MemberId;
         
         
-        member = _dbContext.Members.Find(memberId);
+        member = _dbContext.Members
+            .Where(x => x.MemberId == memberId)
+            .Include(m=>m.Books)
+            .Include("Books.Book")
+            .ToList()[0];
         if (member != null)
         {
             return View(member);
@@ -70,20 +74,23 @@ public class HomeController : Controller
         return View(book);
     }
    
-    /*public async Task<ActionResult> CheckoutBook(CheckoutSelection selection)
+    public async Task<ActionResult> CheckoutBook(CheckoutSelection selection)
     {
-        Book book = new Book();
-        if (selection.BookCopyId != null)
+        BookCopy bookCopy = new BookCopy();
+        if (VerifyMemberId(selection.MemberId))
         {
-            using (var context = new EFCore())
+            if (selection.BookCopyId != null)
             {
-                book = context.BookCopy.Where(x => x.Id == selection.BookCopyId).ToList()[0];
-                
+                bookCopy = _dbContext.BookCopies.Find(selection.BookCopyId);
+                bookCopy.Member = _dbContext.Members.Find(selection.MemberId);
+                _dbContext.SaveChanges();
             }
-            
         }
-        return View(book);
-    }*/
+
+        
+        Console.WriteLine("Done");
+        return View();
+    }
 
     /*private BookInfo SearchBookByAuthor(string author)
     {
@@ -98,9 +105,12 @@ public class HomeController : Controller
                 Console.WriteLine($"Number of available copies: {book.NumOfCopies}");
             }
         }
+    }*/
+    private bool VerifyMemberId(string memberId)
+    {
+        return (_dbContext.Members.Find(memberId) == null);
     }
-
-    private BookInfo SearchBookById(string bookId)
+    /*private BookInfo SearchBookById(string bookId)
     {
         using (var context = new EFCore())
         {

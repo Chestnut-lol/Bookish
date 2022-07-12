@@ -6,12 +6,12 @@
 
 <div class="jumbotron">
     <h1>Bookish</h1>
-    <p class="lead">For all your book needs. Enter a ISBN below and click enter to see book details.</p>
+    <p class="lead"></p>
 </div>
 
 <div class="row">
     <div class="col-md-12">
-        @using (Html.BeginForm("BookQuery", "Home", FormMethod.Get))
+        @using (Html.BeginForm("MemberQuery", "Home", FormMethod.Get))
         {
             <fieldset>
                 <legend>Enter Member ID:</legend>
