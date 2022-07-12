@@ -35,6 +35,10 @@ public class HomeController : Controller
     {
         return View();
     }
+    public IActionResult CheckoutSelection()
+    {
+        return View();
+    }
     public async Task<ActionResult> MemberQuery(Member member)
     {
         string memberId = member.MemberId;
@@ -67,9 +71,6 @@ public class HomeController : Controller
                 .Include(b => b.Copies)
                 .Include("Copies.Member")
                 .ToList()[0];
-            
-            
-            
         }
         return View(book);
     }
@@ -87,9 +88,8 @@ public class HomeController : Controller
             }
         }
 
-        
         Console.WriteLine("Done");
-        return View();
+        return View("Index");
     }
 
     /*private BookInfo SearchBookByAuthor(string author)
@@ -108,8 +108,9 @@ public class HomeController : Controller
     }*/
     private bool VerifyMemberId(string memberId)
     {
-        return (_dbContext.Members.Find(memberId) == null);
+        return (_dbContext.Members.Find(memberId) != null);
     }
+    
     /*private BookInfo SearchBookById(string bookId)
     {
         using (var context = new EFCore())
