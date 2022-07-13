@@ -31,27 +31,19 @@ public class MemberController : Controller
     
     public async Task<ActionResult> MemberQuery(Member member)
     {
-        string memberId = member.MemberId;
-        
-        
-        member = _dbContext.Members
-            .Where(x => x.MemberId == memberId)
+        if (_dbContext.Members.Find(member.MemberId) == null)
+        {
+            return View("ErrorMsg", new ErrorMsgModel("Member not found."));
+        }
+
+        var resultMember = _dbContext.Members
+            .Where(x => x.MemberId == member.MemberId)
             .Include(m=>m.Books)
             .Include("Books.Book")
             .ToList()[0];
-        if (member != null)
-        {
-            return View(member);
-        }
-        
-        Member resultMember = new Member();
         return View(resultMember);
     }
 
-
-    
-
-    
     private bool VerifyMemberId(string memberId)
     {
         return (_dbContext.Members.Find(memberId) != null);
@@ -72,10 +64,13 @@ public class MemberController : Controller
                 };
                 context.Members.Add(member);
                 context.SaveChanges();
-
+                return View("ErrorMsg", new ErrorMsgModel("Member added."));
+            }
+            else
+            {
+                return View("ErrorMsg", new ErrorMsgModel("Member already exists."));
             }
         }
-        return View();
     }
     
     
