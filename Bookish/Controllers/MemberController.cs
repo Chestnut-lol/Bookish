@@ -50,27 +50,15 @@ public class MemberController : Controller
     }
     
     
-    public async Task<ActionResult> MemberInput(MemberInput input)
+    public async Task<ActionResult> MemberInput(Member member)
     {
-        string memberId = input.Id;
-        using (var context = new EFCore())
-        {
-            var member = context.Members.Find(memberId);
-            if (member == null)
-            {
-                member = new Member()
-                {
-                    MemberId = memberId
-                };
-                context.Members.Add(member);
-                context.SaveChanges();
-                return View("ErrorMsg", new ErrorMsgModel("Member added."));
-            }
-            else
-            {
-                return View("ErrorMsg", new ErrorMsgModel("Member already exists."));
-            }
-        }
+        string memberId = (int.Parse(_dbContext.Members
+            .OrderBy(m=>m.MemberId)
+            .Last().MemberId) + 1).ToString();
+        member.MemberId = memberId;
+        _dbContext.Members.Add(member);
+        _dbContext.SaveChanges();
+        return View("ErrorMsg", new ErrorMsgModel($"Member added. Your member ID is {memberId}."));
     }
     
     

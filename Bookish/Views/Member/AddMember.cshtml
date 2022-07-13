@@ -1,7 +1,7 @@
 @{
     ViewData["Title"] = "Add Member";
 }
-@model Bookish.Models.MemberInput
+@model Bookish.Models.Member
 
 
 <div class="row">
@@ -9,12 +9,15 @@
         @using (Html.BeginForm("MemberInput", "Member", FormMethod.Get))
         {
             <fieldset>
-                <legend>Input Member ID:</legend>
-                @Html.TextBoxFor(m => m.Id) @*new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
-                *@
+                <legend>Name:</legend>
+                @Html.TextBoxFor(m => m.Name, new { @class="text",type="name",required="required" }) 
+                <p></p>
+
+                <legend>Email:</legend>
+                @Html.TextBoxFor(m => m.Email, new { @class="text", type="email", required = "required" }) 
+                
                 <p></p>
                 
-
                 <input type="submit" value="Add member" />
             </fieldset>
         }
