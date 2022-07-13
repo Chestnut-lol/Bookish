@@ -3,18 +3,34 @@
 }
 @model Bookish.Models.Book
 <div class="jumbotron">
-    <p class="lead">Input Id of book to delete below</p>
+    <p class="lead">You are about to delete the following book</p>
 </div>
 
 <div class="row">
     <div class="col-md-12">
         @using (Html.BeginForm("BookDeleted", "Book", FormMethod.Get))
         {
+            
+            <table style="width:70%">
+                <tr>
+                    <th>ISBN</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                </tr>
+        
+                <tr>
+                    <td>@Model.Id</td>
+                    <td>@Model.Title</td>
+                    <td>@Model.Author</td>
+                </tr>
+            
+            </table>
+            <p></p>
+            
             <fieldset>
-                <legend>Input ISBN:</legend>
-                @Html.TextBoxFor(m => m.Id, new {@Value = @Model.Id}))
+                @Html.HiddenFor(m => m.Id, new {@Value = @Model.Id})
 
-                <input type="submit" value="Input Book Info" />
+                <input type="submit" value="Delete" />
             </fieldset>
         }
     </div>

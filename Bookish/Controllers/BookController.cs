@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System;
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using Bookish.Models;
 using Microsoft.EntityFrameworkCore;
@@ -154,7 +156,7 @@ public class BookController : Controller
             { 
                 book = new Book()
                 {
-                    Id = input.Id,
+                    Id = (context.Books.Count() + 1).ToString(),
                     Title = input.Title,
                     Author = input.Author,
                     NumOfCopies = 1,
