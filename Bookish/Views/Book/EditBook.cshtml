@@ -11,15 +11,15 @@
         @using (Html.BeginForm("BookEdited", "Book", FormMethod.Get))
         {
             <fieldset>
-                <legend>Input ISBN:</legend>
-                @Html.TextBoxFor(m => m.Id, new { @Value= @Model.Id}) @*new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
+                <legend>Input ISBN of book to edit:</legend>
+                @Html.TextBoxFor(m => m.Id, new { @Value= "@book.Id"}) @*new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
                 *@
                 <p></p>
-                <legend>Input Author:</legend>
+                <legend>Input edited Author:</legend>
                 @Html.TextBoxFor(m => m.Author, new { @Value= @Model.Author}) @*new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
                 *@
                 <p></p>
-                <legend>Input Title:</legend>
+                <legend>Input edited Title:</legend>
                 @Html.TextBoxFor(m => m.Title, new { @Value= @Model.Title}) @*new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
                 *@
 

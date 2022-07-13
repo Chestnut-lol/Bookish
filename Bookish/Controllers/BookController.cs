@@ -29,9 +29,14 @@ public class BookController : Controller
         return View();
     }
     
-    public IActionResult EditBook(Book book)
+    public IActionResult EditBook()
     {
-        return View(book);
+        return View();
+    }
+    
+    public IActionResult DeleteBook()
+    {
+        return View();
     }
     
     
@@ -176,6 +181,25 @@ public class BookController : Controller
             return View("BookNotEdited");
         }
     }
+    
+    [HttpGet]
+    public async Task<ActionResult> BookDeleted(Book input)
+    {
+        string bookId = input.Id;
+        using (var context = new EFCore())
+        {
+            var book = context.Books.Find(bookId);
+            if (book != null)
+            {
+                context.Books.Remove(book);
+                context.SaveChanges();
+                return View();
+            }
+
+            return View("BookNotEdited");
+        }
+    }
+
 
     public async Task<ActionResult> Catalogue()
     {

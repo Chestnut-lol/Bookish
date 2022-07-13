@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Delete Book";
+}
+@model Bookish.Models.Book
+<div class="jumbotron">
+    <p class="lead">Input Id of book to delete below</p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("BookDeleted", "Book", FormMethod.Get))
+        {
+            <fieldset>
+                <legend>Input ISBN:</legend>
+                @Html.TextBoxFor(m => m.Id)
+
+                <input type="submit" value="Input Book Info" />
+            </fieldset>
+        }
+    </div>
+</div>

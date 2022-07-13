@@ -9,7 +9,9 @@
 <h2>Library's Catalogue Display &#128512</h2>
 <h4>(In order of most searched)</h4>
 
-<hr><a asp-area="" asp-controller="Book" asp-action="AddBook">Add Book</a></hr>
+<hr><a asp-area="" asp-controller="Book" asp-action="AddBook">Add Book</a>
+<a asp-area="" asp-controller="Book" asp-action="EditBook">Edit existing Book</a>
+<a asp-area="" asp-controller="Book" asp-action="DeleteBook">Delete Book</a></hr>
 
 <div class="row">
 
@@ -36,12 +38,16 @@
                         <td>@eachBook.NumOfCopies</td>
                         <td>@eachBook.NumOfAvailableCopies</td>
                         <td>@eachBook.Searches</td>
-                        <td>
-                            <form target="EditBook" action="EditBook" method="post">
-                                <input type="hidden" name="book" value=eachBook></input>
-                                <td><a asp-area="" asp-controller="Book" asp-action="EditBook">Edit</a></td>
-                            </form>
-                        </td>
+                        @*<td>
+                            @using(Html.BeginForm("EditBook", "Book", FormMethod.Post))
+                            {
+                                <input type="hidden" name="book.Id" value="@eachBook.Id"></input>
+                                <input type="hidden" name="book.Author" value="@eachBook.Author"></input>
+                                <input type="hidden" name="book.Title" value="@eachBook.Title"></input>
+                                <td><a asp-area="" asp-controller="Book" asp-action="EditBook" asp->Edit</a></td>
+                            }
+                            
+                        </td>*@
 
                     </tr>
                 }
