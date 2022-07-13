@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.ModelBinding.Binders
+@using Bookish.Controllers
 @model Bookish.Models.ListOfBooks
 
 @{
@@ -7,6 +8,8 @@
 <meta charset="UTF-8"></meta>
 <h2>Library's Catalogue Display &#128512</h2>
 <h4>(In order of most searched)</h4>
+
+<hr><a asp-area="" asp-controller="Book" asp-action="AddBook">Add Book</a></hr>
 
 <div class="row">
 
@@ -23,20 +26,23 @@
         @{
             if (Model.AllBooks.Count >= 1)
             {
-                foreach (var bookCopy in Model.AllBooks)
+                foreach (var eachBook in Model.AllBooks)
                 {
        
                     <tr>
-                        <td>@bookCopy.Id</td>
-                        <td>@bookCopy.Title</td>
-                        <td>@bookCopy.Author</td>
-                        <td>@bookCopy.NumOfCopies</td>
-                        <td>@bookCopy.NumOfAvailableCopies</td>
-                        <td>@bookCopy.Searches</td>
-                        <td><button class="editbtn">Edit</button></td>
-                        <td><li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Edit</a>
-                        </li></td>
+                        <td>@eachBook.Id</td>
+                        <td>@eachBook.Title</td>
+                        <td>@eachBook.Author</td>
+                        <td>@eachBook.NumOfCopies</td>
+                        <td>@eachBook.NumOfAvailableCopies</td>
+                        <td>@eachBook.Searches</td>
+                        <td>
+                            <form target="EditBook" action="EditBook" method="post">
+                                <input type="hidden" name="book" value=eachBook></input>
+                                <td><a asp-area="" asp-controller="Book" asp-action="EditBook">Edit</a></td>
+                            </form>
+                        </td>
+
                     </tr>
                 }
             }
@@ -44,6 +50,4 @@
 
     </table>
     <p></p>
-    
-  
 </div>

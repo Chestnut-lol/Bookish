@@ -29,6 +29,11 @@ public class BookController : Controller
         return View();
     }
     
+    public IActionResult EditBook(Book book)
+    {
+        return View(book);
+    }
+    
     
     
     
@@ -152,8 +157,26 @@ public class BookController : Controller
         }
         return View();
     }
-    
-    
+
+    [HttpGet]
+    public async Task<ActionResult> BookEdited(Book input)
+    {
+        string bookId = input.Id;
+        using (var context = new EFCore())
+        {
+            var book = context.Books.Find(bookId);
+            if (book != null)
+            {
+                if (input.Title != null) book.Title = input.Title;
+                if (input.Author != null) book.Author = input.Author;
+                context.SaveChanges();
+                return View();
+            }
+
+            return View("BookNotEdited");
+        }
+    }
+
     public async Task<ActionResult> Catalogue()
     {
         //string memberId = member.MemberId;
@@ -169,6 +192,24 @@ public class BookController : Controller
         
         return View(AllBooksList);
     }
+    
+    /*
+    public async Task<ActionResult> EditBook(Book book)
+    {
+        //string memberId = member.MemberId;
+
+        //var AllBooksList = new ListOfBooks();
+        //AllBooksList.AllBooks = _dbContext.Books.ToList().OrderBy(x => x.Searches).ToList();
+        //AllBooksList.AllBooks = Enumerable.Reverse(AllBooksList.AllBooks).ToList();
+        
+        //if (AllBooksList != null)
+        {
+            return View();
+        }
+        
+        return View();
+    }
+    */
 
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
