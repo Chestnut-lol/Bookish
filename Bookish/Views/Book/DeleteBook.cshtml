@@ -12,7 +12,7 @@
         {
             <fieldset>
                 <legend>Input ISBN:</legend>
-                @Html.TextBoxFor(m => m.Id)
+                @Html.TextBoxFor(m => m.Id, new {@Value = @Model.Id}))
 
                 <input type="submit" value="Input Book Info" />
             </fieldset>

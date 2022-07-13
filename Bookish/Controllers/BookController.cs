@@ -40,9 +40,16 @@ public class BookController : Controller
         }
     }
     
-    public IActionResult DeleteBook()
+    
+    [HttpGet]
+    public IActionResult DeleteBook(string parameter1)
     {
-        return View();
+        string bookId = parameter1;
+        using (var context = new EFCore())
+        {
+            var book = context.Books.Find(bookId);
+            return View(book);
+        }
     }
     
     
