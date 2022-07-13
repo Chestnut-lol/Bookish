@@ -8,7 +8,7 @@ public class Book
     public int NumOfCopies { get; set; }
     public int NumOfAvailableCopies { get; set; }
     
-    public int NumOfSearches { get; set; }
+    public int Searches { get; set; }
     
     public virtual List<BookCopy> Copies { get; set; }
     //public BookCopy BookCopy { get; set; }

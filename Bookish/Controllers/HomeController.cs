@@ -78,7 +78,7 @@ public class HomeController : Controller
                 .Include(b => b.Copies)
                 .Include("Copies.Member")
                 .ToList()[0];
-            book.NumOfSearches += 1;
+            book.Searches += 1;
             _dbContext.SaveChanges();
         }
         return View(book);
@@ -211,7 +211,7 @@ public class HomeController : Controller
         //string memberId = member.MemberId;
 
         var AllBooksList = new ListOfBooks();
-        AllBooksList.AllBooks = _dbContext.Books.ToList().OrderBy(x => x.NumOfSearches).ToList();
+        AllBooksList.AllBooks = _dbContext.Books.ToList().OrderBy(x => x.Searches).ToList();
         AllBooksList.AllBooks = Enumerable.Reverse(AllBooksList.AllBooks).ToList();
         
         if (AllBooksList != null)

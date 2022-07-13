@@ -36,7 +36,7 @@ namespace Bookish.Migrations
                     b.Property<int>("NumOfCopies")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumOfSearches")
+                    b.Property<int>("Searches")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
