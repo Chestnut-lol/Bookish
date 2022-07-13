@@ -44,10 +44,6 @@ public class MemberController : Controller
         return View(resultMember);
     }
 
-
-    
-
-    
     private bool VerifyMemberId(string memberId)
     {
         return (_dbContext.Members.Find(memberId) != null);
@@ -68,10 +64,13 @@ public class MemberController : Controller
                 };
                 context.Members.Add(member);
                 context.SaveChanges();
-
+                return View("ErrorMsg", new ErrorMsgModel("Member added."));
+            }
+            else
+            {
+                return View("ErrorMsg", new ErrorMsgModel("Member already exists."));
             }
         }
-        return View();
     }
     
     
