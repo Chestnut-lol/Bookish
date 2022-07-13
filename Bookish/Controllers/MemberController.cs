@@ -29,9 +29,10 @@ public class MemberController : Controller
     }
     
     
-    public async Task<ActionResult> MemberQuery(Member member)
+    public IActionResult MemberQuery(Member member)
     {
-        if (_dbContext.Members.Find(member.MemberId) == null)
+        var memberModel = _dbContext.Members.SingleOrDefault(m => m.MemberId == member.MemberId);
+        if (memberModel == null)
         {
             return View("ErrorMsg", new ErrorMsgModel("Member not found."));
         }
@@ -44,13 +45,32 @@ public class MemberController : Controller
         return View(resultMember);
     }
 
+    public IActionResult EditMember(string memberId)
+    {
+        // var member = _dbContext.Members.Find(memberId);
+        var member = _dbContext.Members.SingleOrDefault(m => m.MemberId == memberId);
+        return View(member);
+    }
+    public IActionResult MemberChange(Member inputMember)
+    {
+        // var member = _dbContext.Members.Find(memberId);
+        var member = _dbContext.Members
+            .Where(x => x.MemberId == inputMember.MemberId)
+            .Include(m=>m.Books)
+            .Include("Books.Book")
+            .ToList()[0];
+        member.Name = inputMember.Name;
+        member.Email = inputMember.Email;
+        _dbContext.SaveChanges();
+        return View("MemberQuery", member );
+    }
     private bool VerifyMemberId(string memberId)
     {
         return (_dbContext.Members.Find(memberId) != null);
     }
     
     
-    public async Task<ActionResult> MemberInput(Member member)
+    public IActionResult MemberInput(Member member)
     {
         string memberId = (int.Parse(_dbContext.Members
             .OrderBy(m=>m.MemberId)

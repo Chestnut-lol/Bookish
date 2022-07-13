@@ -5,12 +5,29 @@
     ViewBag.Title = "Member Query Display";
 }
 <meta charset="UTF-8"></meta>
-<h2>Member Info &#128512</h2>
+<h3>Member Info</h3>
 
 <div class="row">
-    <p>You searched for the member with ID: @Model.MemberId</p>
-    
-    
+    <p>Member ID: @Model.MemberId</p>
+    <p>Name: @Model.Name </p>
+    <p>Email: @Model.Email </p>
+    @Html.ActionLink("Edit", "EditMember", new{Model.MemberId}, FormMethod.Get)
+    @*@using (Html.BeginForm("EditMember", "Member", new{Model.MemberId}, FormMethod.Get))
+    {
+        <fieldset>
+            $1$<legend>Enter Member ID:</legend>
+            @Html.TextBoxFor(m => m.MemberId) $2$new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
+            #2##1#
+            <input type="submit" value="Edit" />
+            
+        </fieldset>
+    }*@
+</div>
+<p></p>
+<p></p>
+
+<div class="row">
+    <h3>Current lendings</h3>
     <table style="width:100%">
         <tr>
             <th>ISBN</th>
@@ -19,7 +36,7 @@
             <th>Number of total copies</th>
             <th>Number of available copies</th>
         </tr>
-        
+
         @{
             if (Model.Books.Count >= 1)
             {
@@ -36,9 +53,11 @@
                 }
             }
         }
-            
+
     </table>
     <p></p>
+</div>
+    
     
   
-</div>
+

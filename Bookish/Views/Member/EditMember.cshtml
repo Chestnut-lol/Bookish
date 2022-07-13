@@ -1,0 +1,31 @@
+﻿
+@model Bookish.Models.Member
+
+@{
+    ViewBag.Title = "Member Query Display";
+}
+
+<h3>Edit Member Info</h3>
+
+<div class="row">
+    @using (Html.BeginForm("MemberChange", "Member", FormMethod.Get))
+    {
+        <fieldset>
+            <p>Member ID: @Model.MemberId</p>
+            <div style="display:inline">
+                <label style="float:left; margin-right:20px;">Name: </label>
+    
+                @Html.TextBoxFor(m => m.Name, new { style = "float: left;" })
+                @Html.HiddenFor(m => m.MemberId, new { Value = Model.MemberId })
+            </div>
+            <br><br/>
+            <div style="display:inline">
+                <label style="float:left; margin-right:20px;">Email: </label>
+    
+                @Html.TextBoxFor(m => m.Email, new { style = "float: left;" })
+            </div>
+            <br><br/>
+            <input type="submit" value="Change" />
+        </fieldset>
+    }
+</div>
