@@ -27,7 +27,11 @@
             <td>@Model.Author</td>
             <td>@Model.NumOfCopies</td>
             <td>@Model.NumOfAvailableCopies</td>
-            <td>@Model.Copies[0].Member.MemberId</td>
+            
+            @if (Model.Copies.Count >= 1)
+            {
+                <td>@Model.Copies[0].Member.MemberId</td>
+            }
         </tr>
             
     </table>
