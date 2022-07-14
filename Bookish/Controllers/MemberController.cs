@@ -133,7 +133,7 @@ public class MemberController : Controller
     }
     
     
-    public IActionResult MemberInput(Member member)
+    public IActionResult AddMemberToDB(Member member)
     {
         string memberId = GetTimestamp(DateTime.Now);
         member.MemberId = memberId;
