@@ -29,6 +29,12 @@ public class MemberController : Controller
         return View();
     }
     
+    public IActionResult MemberCatalogue()
+    {
+        return View(_dbContext.Members.ToList());
+    }
+    
+    
     
     public IActionResult MemberQuery(Member member)
     {
