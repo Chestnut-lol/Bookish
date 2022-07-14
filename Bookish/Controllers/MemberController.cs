@@ -32,18 +32,52 @@ public class MemberController : Controller
     
     public IActionResult MemberQuery(Member member)
     {
-        var memberModel = _dbContext.Members.SingleOrDefault(m => m.MemberId == member.MemberId);
+        if (member.MemberId != null)
+        {
+            return SearchMemberById(member.MemberId);
+        }
+        else if (member.Name != null)
+        {
+            return SearchMemberByName(member.Name);
+        }
+        else if (member.Email != null)
+        {
+            return SearchMemberByEmail(member.Email);
+        }
+        else
+        {
+            return View("ErrorMsg", new ErrorMsgModel("You did not input anything! :("));
+        }
+    }
+
+    private IActionResult SearchMemberById(string memberId)
+    {
+        var memberModel = _dbContext.Members.SingleOrDefault(m => m.MemberId == memberId);
         if (memberModel == null)
         {
             return View("ErrorMsg", new ErrorMsgModel("Member not found."));
         }
 
         var resultMember = _dbContext.Members
-            .Where(x => x.MemberId == member.MemberId)
+            .Where(x => x.MemberId == memberId)
             .Include(m=>m.Books)
             .Include("Books.Book")
             .ToList()[0];
-        return View(resultMember);
+        return View("MemberQuery", resultMember);
+    }
+    
+    private IActionResult SearchMemberByName(string name)
+    {
+        var members = _dbContext.Members.Where(m => m.Name == name);
+        
+        return View("MemberQueryByNameOrEmail", members);
+    }
+    
+    private IActionResult SearchMemberByEmail(string email)
+    {
+        var members = _dbContext.Members.Where(m => m.Email == email);
+        
+        return View("MemberQueryByNameOrEmail", members);
     }
 
     public IActionResult EditMember(string memberId)
