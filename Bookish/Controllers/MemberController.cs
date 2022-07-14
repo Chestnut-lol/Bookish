@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Bookish.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.VisualBasic;
 
 namespace Bookish.Controllers;
@@ -90,6 +91,26 @@ public class MemberController : Controller
     {
         var member = _dbContext.Members.SingleOrDefault(m => m.MemberId == memberId);
         return View(member);
+    }
+    
+    public IActionResult ConfirmDeleteMember(string memberId)
+    {
+        var member = _dbContext.Members.Where(m=>m.MemberId == memberId)
+            .Include("Books")
+            .ToList()[0];
+        _dbContext.SaveChanges();
+        if (member.Books.Count != 0)
+        {
+            return View("ErrorMsg", new ErrorMsgModel("Unable to delete the member as lendings are not empty."));
+        }
+        return View("ConfirmDeleteMember",member);
+    }
+    
+    public IActionResult DeleteMember(Member member)
+    {
+        _dbContext.Members.Remove(member);
+        _dbContext.SaveChanges();
+        return View("ErrorMsg", new ErrorMsgModel("Member deleted."));
     }
     
     public IActionResult MemberChange(Member inputMember)

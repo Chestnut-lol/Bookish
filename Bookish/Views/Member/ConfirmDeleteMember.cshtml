@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Mvc.ModelBinding.Binders
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@model Bookish.Models.Member
+
+@{
+    ViewBag.Title = "Confirm delete";
+}
+
+<h3>Member Info</h3>
+
+<div class="row">
+    <p>Member ID: @Model.MemberId</p>
+    <p>Name: @Model.Name </p>
+    <p>Email: @Model.Email </p>
+    @*@using (Html.BeginForm("EditMember", "Member", new{Model.MemberId}, FormMethod.Get))
+    {
+        <fieldset>
+            $1$<legend>Enter Member ID:</legend>
+            @Html.TextBoxFor(m => m.MemberId) $2$new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
+            #2##1#
+            <input type="submit" value="Edit" />
+            
+        </fieldset>
+    }*@
+</div>
+
+<p style="color:red"> Are you sure you want to delete this member?</p>
+    @Html.ActionLink("Confirm","DeleteMember","Member",Model)
+<br>
+
+
+  
+

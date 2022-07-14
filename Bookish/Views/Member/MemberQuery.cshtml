@@ -2,7 +2,7 @@
 @model Bookish.Models.Member
 
 @{
-    ViewBag.Title = "Member Query Display";
+    ViewBag.Title = "Member Info";
 }
 <meta charset="UTF-8"></meta>
 <h3>Member Info</h3>
@@ -12,6 +12,7 @@
     <p>Name: @Model.Name </p>
     <p>Email: @Model.Email </p>
     @Html.ActionLink("Edit", "EditMember", new{Model.MemberId}, FormMethod.Get)
+    @Html.ActionLink("Delete", "ConfirmDeleteMember", new{Model.MemberId}, FormMethod.Get)
     @*@using (Html.BeginForm("EditMember", "Member", new{Model.MemberId}, FormMethod.Get))
     {
         <fieldset>
