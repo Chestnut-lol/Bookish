@@ -23,8 +23,7 @@
         </fieldset>
     }*@
 </div>
-<p></p>
-<p></p>
+<br>
 
 <div class="row">
     <h3>Current lendings</h3>
@@ -38,19 +37,15 @@
         </tr>
 
         @{
-            if (Model.Books.Count >= 1)
+            foreach (var bookCopy in Model.Books)
             {
-                foreach (var bookCopy in Model.Books)
-                {
-
-                    <tr>
-                        <td>@bookCopy.Id</td>
-                        <td>@bookCopy.Book.Title</td>
-                        <td>@bookCopy.Book.Author</td>
-                        <td>@bookCopy.Book.NumOfCopies</td>
-                        <td>@bookCopy.Book.NumOfAvailableCopies</td>
-                    </tr>
-                }
+                <tr>
+                    <td>@bookCopy.Id</td>
+                    <td>@bookCopy.Book.Title</td>
+                    <td>@bookCopy.Book.Author</td>
+                    <td>@bookCopy.Book.NumOfCopies</td>
+                    <td>@bookCopy.Book.NumOfAvailableCopies</td>
+                </tr>
             }
         }
 
