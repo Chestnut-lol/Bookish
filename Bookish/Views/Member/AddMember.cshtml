@@ -10,14 +10,11 @@
         {
             <fieldset>
                 <legend>Name:</legend>
-@Html.TextBoxFor(m => m.Name, new { @class="text", type="name", required="required" })
-                <p></p>
-
+                @Html.TextBoxFor(m => m.Name, new { @class="text", type="name", required="required" })
+                <br></br>
                 <legend>Email:</legend>
-                @Html.TextBoxFor(m => m.Email, new { @class="text", type="email", required = "required" }) 
-                
-                <p></p>
-                
+                @Html.TextBoxFor(m => m.Email, new { @class="text", type="email", required = "required" })
+                <br><br></br>
                 <input type="submit" value="Add member" />
             </fieldset>
         }
