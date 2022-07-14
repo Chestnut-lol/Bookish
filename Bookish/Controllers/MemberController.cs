@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Bookish.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 
 namespace Bookish.Controllers;
 
@@ -73,13 +74,15 @@ public class MemberController : Controller
     
     public IActionResult MemberInput(Member member)
     {
-        string memberId = (int.Parse(_dbContext.Members
-            .OrderBy(m=>m.MemberId)
-            .Last().MemberId) + 1).ToString();
+        string memberId = GetTimestamp(DateTime.Now);
         member.MemberId = memberId;
         _dbContext.Members.Add(member);
         _dbContext.SaveChanges();
-        return View("ErrorMsg", new ErrorMsgModel($"Member added. Your member ID is {memberId}."));
+        return View("ErrorMsg", new ErrorMsgModel($"Member added. Your member ID is {member.MemberId}."));
+    }
+    public static String GetTimestamp(DateTime value)
+    {
+        return value.ToString("yyMMddHHmmssff");
     }
     
     
