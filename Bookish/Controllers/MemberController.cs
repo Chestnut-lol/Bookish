@@ -47,23 +47,24 @@ public class MemberController : Controller
 
     public IActionResult EditMember(string memberId)
     {
-        // var member = _dbContext.Members.Find(memberId);
         var member = _dbContext.Members.SingleOrDefault(m => m.MemberId == memberId);
         return View(member);
     }
+    
     public IActionResult MemberChange(Member inputMember)
     {
         // var member = _dbContext.Members.Find(memberId);
         var member = _dbContext.Members
             .Where(x => x.MemberId == inputMember.MemberId)
             .Include(m=>m.Books)
-            .Include("Books.Book")
+            .ThenInclude(b=>b.Book)
             .ToList()[0];
         member.Name = inputMember.Name;
         member.Email = inputMember.Email;
         _dbContext.SaveChanges();
         return View("MemberQuery", member );
     }
+    
     private bool VerifyMemberId(string memberId)
     {
         return (_dbContext.Members.Find(memberId) != null);
