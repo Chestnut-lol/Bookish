@@ -49,29 +49,11 @@
 
                         <form id="myBook"> <input type="hidden" id="id" value="@eachBook.Id"></input> </form>
                         
-                        @{ btnBook = eachBook;}
+                        @{btnBook = eachBook;}
                         
-                        <td><input type="button" style="background-color:cornflowerblue" value="Edit" onclick="location.href='@Url.Action("EditBook", "Book", new {parameter1 = @eachBook.Id })'" /></td>
+                        <td><input type="button" style="background-color:cornflowerblue" value="View Copies" onclick="location.href='@Url.Action("CopiesOfBook", "Book", new {parameter1 = @eachBook.Id })'" /></td>
                         <td><input type="button" style="background-color:indianred" value="Delete" onclick="location.href='@Url.Action("DeleteBook", "Book", new {parameter1 = @eachBook.Id })'" /></td>
-
-
-
-                        @*<td>
-                            @using (Html.BeginForm("EditBook", "Book", FormMethod.Get))
-                                    {
-                                        <fieldset>
-                                            <legend></legend>
-                                            
-                                            @Html.HiddenFor(x => x.num, i)
-                                            
-                                            @Html.HiddenFor(x => x.AllBooks[i].Id, "@eachBook.Id")
-                                            
-                                            
-
-                                            <input type="submit" value="Input Book Info" />
-                                        </fieldset>
-                                    }*@
-
+                        <td><input type="button" style="background-color:cornflowerblue" value="Edit" onclick="location.href='@Url.Action("EditBook", "Book", new {parameter1 = @eachBook.Id })'" /></td>
                     </tr>
                 }
             }

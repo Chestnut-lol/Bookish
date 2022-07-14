@@ -20,21 +20,23 @@ public class BookController : Controller
     }
 
     
-
+    [HttpGet]
     public IActionResult AddBook()
     {
         return View();
     }
     
+    //This action wont be used in this version
+    [HttpGet]
     public IActionResult CheckoutSelection()
     {
         return View();
     }
     
+    
     [HttpGet]
-    public IActionResult EditBook(string parameter1)
+    public IActionResult EditBook(string bookId)
     {
-        string bookId = parameter1;
         using (var context = new EFCore())
         {
             var book = context.Books.Find(bookId);
@@ -44,9 +46,8 @@ public class BookController : Controller
     
     
     [HttpGet]
-    public IActionResult DeleteBook(string parameter1)
+    public IActionResult DeleteBook(string bookId)
     {
-        string bookId = parameter1;
         using (var context = new EFCore())
         {
             var book = context.Books.Find(bookId);
@@ -54,10 +55,84 @@ public class BookController : Controller
         }
     }
     
+    [HttpGet]
+    public IActionResult CopiesOfBook(string parameter1)
+    {
+        string bookId = parameter1;
+        using (var context = new EFCore())
+        {
+            var book = _dbContext.Books.Where(x => x.Id == parameter1).Include(b => b.Copies).ToList()[0];
+            return View(book);
+        }
+    }
+    
+    [HttpGet]
+    public IActionResult ToCheckout(BookCopy bookCopy)
+    {
+        /*using (var context = new EFCore())
+        {
+            if (bookCopy != null && (_dbContext.BookCopies.Find(bookCopy.Id) != null))
+            {
+                var bookCopy = _dbContext.BookCopies.Include("Member").Include("Book").Where(x => x.Id == bookCopy.Id).ToList()[0];
+                return View(bookCopy);
+            }
+            return View();
+        }*/
+        return View(bookCopy);
+    }
+    
+    [HttpGet]
+    public IActionResult CheckoutBook(BookCopy memberId)
+    {
+        using (var context = new EFCore())
+        {
+            var bookCopy = _dbContext.BookCopies.Where(x => x.Id == memberId.Id).ToList()[0];
+            //var book = _dbContext.Books.Where(x => x.Id == bookCopy.Book.Id).ToList()[0];
+            var member = _dbContext.Members.Where(x => x.MemberId == memberId.Member.MemberId).ToList()[0];
+            //book.NumOfAvailableCopies -= 1;
+            bookCopy.Member = member;
+            bookCopy.DueDate = DateTime.Now.AddDays(14);
+            _dbContext.SaveChanges();
+
+            
+            var AllBooksList = new ListOfBooks();
+            AllBooksList.AllBooks = _dbContext.Books.ToList().OrderBy(x => x.Searches).ToList();
+            AllBooksList.AllBooks = Enumerable.Reverse(AllBooksList.AllBooks).ToList();
+
+
+            return View("Catalogue", AllBooksList);
+        }
+    }
+    
+    [HttpGet]
+    public IActionResult AddCopy(Book numberOfCopies)
+    {
+        int newCopies = numberOfCopies.NumOfCopies;
+        using (var context = new EFCore())
+        {
+            var book = _dbContext.Books.Where(x => x.Id == numberOfCopies.Id).Include(b => b.Copies).Include("Copies.Member").ToList()[0];
+            for (int i = numberOfCopies.Copies.Count; i < numberOfCopies.Copies.Count + newCopies; i++)
+            {
+                BookCopy newCopy = new BookCopy();
+                newCopy.Id =  GetTimestamp(DateTime.Now) + i;
+                newCopy.Book = book;
+                //context.BookCopies.Add(newCopy);
+                book.Copies.Add(newCopy);
+                book.NumOfAvailableCopies += 1;
+            }
+            _dbContext.SaveChanges();
+            //context.SaveChanges();
+            return View("CopiesOfBook", book);
+        }
+    }
     
     
     
     
+    private static String GetTimestamp(DateTime value)
+    {
+        return value.ToString("yyMMddHHmmssff");
+    }
 
     
     public async Task<ActionResult> BookQuery(BookSelection selection)
@@ -204,8 +279,14 @@ public class BookController : Controller
         using (var context = new EFCore())
         {
             var book = context.Books.Find(bookId);
+            var bookCopies = _dbContext.BookCopies.Where(b=>b.Book.Id == input.Id).Include("Member").Include("Book").ToList();
+            
             if (book != null)
             {
+                foreach (BookCopy copy in bookCopies)
+                {
+                    context.BookCopies.Remove(copy);
+                }
                 context.Books.Remove(book);
                 context.SaveChanges();
                 return View();
