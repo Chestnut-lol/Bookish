@@ -30,13 +30,14 @@ public class MemberController : Controller
         return View();
     }
     
+    [HttpGet]
     public IActionResult MemberCatalogue()
     {
         return View(_dbContext.Members.ToList());
     }
     
     
-    
+    [HttpGet]
     public IActionResult MemberQuery(Member member)
     {
         if (member.MemberId != null)
@@ -56,7 +57,8 @@ public class MemberController : Controller
             return View("ErrorMsg", new ErrorMsgModel("You did not input anything! :("));
         }
     }
-
+    
+    [HttpGet]
     private IActionResult SearchMemberById(string memberId)
     {
         var memberModel = _dbContext.Members.SingleOrDefault(m => m.MemberId == memberId);
@@ -72,7 +74,7 @@ public class MemberController : Controller
             .ToList()[0];
         return View("MemberQuery", resultMember);
     }
-    
+    [HttpGet]
     private IActionResult SearchMemberByName(string name)
     {
         var members = _dbContext.Members.Where(m => m.Name == name);
@@ -80,6 +82,7 @@ public class MemberController : Controller
         return View("MemberQueryByNameOrEmail", members);
     }
     
+    [HttpGet]
     private IActionResult SearchMemberByEmail(string email)
     {
         var members = _dbContext.Members.Where(m => m.Email == email);
@@ -87,18 +90,21 @@ public class MemberController : Controller
         return View("MemberQueryByNameOrEmail", members);
     }
 
+    [HttpGet]
     public IActionResult EditMember(string memberId)
     {
         var member = _dbContext.Members.SingleOrDefault(m => m.MemberId == memberId);
         return View(member);
     }
     
+    [HttpGet]
     public IActionResult ConfirmDeleteMember(string memberId)
     {
-        var member = _dbContext.Members.Where(m=>m.MemberId == memberId)
-            .Include("Books")
-            .ToList()[0];
-        _dbContext.SaveChanges();
+        var member = _dbContext.Members.Include(m => m.Books)
+            .SingleOrDefault(m => m.MemberId == memberId);
+        // var member = _dbContext.Members.Where(m=>m.MemberId == memberId)
+        //    .Include(m => m.Books)
+        //    .ToList()[0];
         if (member.Books.Count != 0)
         {
             return View("ErrorMsg", new ErrorMsgModel("Unable to delete the member as lendings are not empty."));
@@ -106,13 +112,16 @@ public class MemberController : Controller
         return View("ConfirmDeleteMember",member);
     }
     
+    [HttpDelete]
     public IActionResult DeleteMember(Member member)
     {
         _dbContext.Members.Remove(member);
         _dbContext.SaveChanges();
+        return RedirectToAction(nameof(MemberCatalogue));
         return View("ErrorMsg", new ErrorMsgModel("Member deleted."));
     }
     
+    [HttpPost]
     public IActionResult MemberChange(Member inputMember)
     {
         // var member = _dbContext.Members.Find(memberId);
@@ -126,14 +135,9 @@ public class MemberController : Controller
         _dbContext.SaveChanges();
         return View("MemberQuery", member );
     }
-    
-    private bool VerifyMemberId(string memberId)
-    {
-        return (_dbContext.Members.Find(memberId) != null);
-    }
-    
-    
-    public IActionResult AddMemberToDB(Member member)
+
+    [HttpPost]
+    public IActionResult AddMemberToDb(Member member)
     {
         string memberId = GetTimestamp(DateTime.Now);
         member.MemberId = memberId;
@@ -141,6 +145,7 @@ public class MemberController : Controller
         _dbContext.SaveChanges();
         return View("ErrorMsg", new ErrorMsgModel($"Member added. Your member ID is {member.MemberId}."));
     }
+    
     public static String GetTimestamp(DateTime value)
     {
         return value.ToString("yyMMddHHmmssff");
