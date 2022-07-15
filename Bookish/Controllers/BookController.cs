@@ -32,6 +32,7 @@ public class BookController : Controller
         return View();
     }
     
+    
     [HttpGet]
     public IActionResult EditBook(string bookId)
     {
@@ -46,12 +47,110 @@ public class BookController : Controller
     [HttpGet]
     public IActionResult DeleteBook(string bookId)
     {
-            var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
-            return View(book);
+         var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
+         return View(book);
     }
     
     [HttpGet]
+
+    public IActionResult CopiesOfBook(string bookId)
+    {
+        var book = _dbContext.Books.Include(b => b.Copies).Include("Copies.Member").SingleOrDefault(b => b.Id == bookId);
+        return View(book);
+
+    }
+    
+    [HttpGet]
+    public IActionResult ToCheckout(string bookCopyId)
+    {
+        var bookCopy = _dbContext.BookCopies.Include(b => b.Book).Include(b => b.Member).SingleOrDefault(b => b.Id == bookCopyId);
+        return View(bookCopy);
+    }
+    
+    
+    [HttpPost]
+    public IActionResult CheckoutCopy(BookCopy checkedOutCopy)
+    {
+        var bookCopy = _dbContext.BookCopies.Include(b => b.Book).Include(b => b.Member).SingleOrDefault(x => x.Id == checkedOutCopy.Id);
+        var member = _dbContext.Members.SingleOrDefault(x => x.MemberId == checkedOutCopy.Member.MemberId);
+        //book.NumOfAvailableCopies -= 1;
+        bookCopy.Member = member;
+        bookCopy.DueDate = DateTime.Now.AddDays(14);
+        _dbContext.SaveChanges();
+        
+        var book = _dbContext.Books.Include(b => b.Copies).Include("Copies.Member").SingleOrDefault(b => b.Id == bookCopy.Book.Id);
+        return View("CopiesOfBook", book);
+    }
+    
+    [HttpGet]
+    public IActionResult CheckInCopy(string bookCopyId)
+    {
+        var bookCopy = _dbContext.BookCopies.Include(b => b.Book).Include(b => b.Member).SingleOrDefault(x => x.Id == bookCopyId);
+        //book.NumOfAvailableCopies -= 1;
+        bookCopy.Member = null;
+        _dbContext.SaveChanges();
+        
+        var book = _dbContext.Books.Include(b => b.Copies).Include("Copies.Member").SingleOrDefault(b => b.Id == bookCopy.Book.Id);
+        return View("CopiesOfBook", book);
+    }
+    
+    [HttpGet]
+    public IActionResult CheckoutBook(BookCopy memberId)
+    {
+        using (var context = new EFCore())
+        {
+            var bookCopy = _dbContext.BookCopies.Where(x => x.Id == memberId.Id).ToList()[0];
+            //var book = _dbContext.Books.Where(x => x.Id == bookCopy.Book.Id).ToList()[0];
+            var member = _dbContext.Members.Where(x => x.MemberId == memberId.Member.MemberId).ToList()[0];
+            //book.NumOfAvailableCopies -= 1;
+            bookCopy.Member = member;
+            bookCopy.DueDate = DateTime.Now.AddDays(14);
+            _dbContext.SaveChanges();
+
+            
+            var AllBooksList = new ListOfBooks();
+            AllBooksList.AllBooks = _dbContext.Books.ToList().OrderBy(x => x.Searches).ToList();
+            AllBooksList.AllBooks = Enumerable.Reverse(AllBooksList.AllBooks).ToList();
+
+
+            return View("Catalogue", AllBooksList);
+        }
+    }
+    
+    [HttpGet]
+    public IActionResult AddCopy(Book numberOfCopies)
+    {
+        int newCopies = numberOfCopies.NumOfCopies;
+        using (var context = new EFCore())
+        {
+            var book = _dbContext.Books.Where(x => x.Id == numberOfCopies.Id).Include(b => b.Copies).Include("Copies.Member").ToList()[0];
+            for (int i = numberOfCopies.Copies.Count; i < numberOfCopies.Copies.Count + newCopies; i++)
+            {
+                BookCopy newCopy = new BookCopy();
+                newCopy.Id =  GetTimestamp(DateTime.Now) + i;
+                newCopy.Book = book;
+                //context.BookCopies.Add(newCopy);
+                book.Copies.Add(newCopy);
+                book.NumOfAvailableCopies += 1;
+            }
+            _dbContext.SaveChanges();
+            //context.SaveChanges();
+            return View("CopiesOfBook", book);
+        }
+    }
+    
+    
+    
+    
+    private static String GetTimestamp(DateTime value)
+    {
+        return value.ToString("yyMMddHHmmssff");
+    }
+
+    
+
     public IActionResult GetBook(BookSelection selection)
+
     {
         Book book = new Book();
         if (selection.Id != null)
@@ -138,7 +237,9 @@ public class BookController : Controller
             { 
                 book = new Book()
                 {
-                    Id = (_dbContext.Books.Count() + 1).ToString(),
+
+                    Id = GetTimestamp(DateTime.Now),
+
                     Title = input.Title,
                     Author = input.Author,
                     NumOfCopies = 1,
@@ -146,7 +247,10 @@ public class BookController : Controller
                 };
                 _dbContext.Books.Add(book);
             }
+
+
             _dbContext.SaveChanges();
+
         return View();
     }
 
@@ -168,6 +272,7 @@ public class BookController : Controller
     public IActionResult BookSuccessfullyDeleted(Book input)
     {
         string bookId = input.Id;
+
         var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
         if (book == null) return View("BookNotDeleted");
         
@@ -200,6 +305,40 @@ public class BookController : Controller
         return View(AllBooksList);
     }
     
+
+
+    [HttpPost]
+    public async Task<ActionResult> CheckAction(string btnString)
+    {
+        if (btnString == "edit")
+        {
+            return View("EditBook");
+        }
+        else if (btnString == "delete")
+        {
+            return View("DeleteBook");
+        }
+
+        return View("Catalogue");
+    }
+    
+    [HttpGet]
+    public IActionResult DeleteCopy(string bookCopyId, string bookId)
+    {
+        var copy = _dbContext.BookCopies.SingleOrDefault(b => b.Id == bookCopyId);
+
+        if (copy == null) return View("BookNotEdited");
+            
+       _dbContext.BookCopies.Remove(copy);
+       _dbContext.SaveChanges();
+       
+       var book = _dbContext.Books.Include(b => b.Copies).Include("Copies.Member").SingleOrDefault(b => b.Id == bookId);
+
+       return View("CopiesOfBook", book);
+    }
+    
+
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

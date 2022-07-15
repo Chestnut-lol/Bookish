@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Add Book";
+}
+@model Bookish.Models.BookCopy
+<div class="jumbotron">
+    <p class="lead">Input a book with information below</p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("CheckoutCopy", "Book", FormMethod.Post))
+        {
+            <fieldset>
+
+                @Html.HiddenFor(checkedOutCopy => checkedOutCopy.Book, new {@Value = @Model.Book})
+                @Html.HiddenFor(checkedOutCopy => checkedOutCopy.Id, new {@Value = @Model.Id})
+                <legend>Input Id of member checking out this book:</legend>
+                @Html.TextBoxFor(checkedOutCopy => checkedOutCopy.Member.MemberId)
+                <p></p>
+
+
+                <input type="submit" value="Submit" />
+            </fieldset>
+        }
+    </div>
+</div>

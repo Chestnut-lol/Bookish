@@ -1,0 +1,91 @@
+﻿@using Microsoft.AspNetCore.Mvc.ModelBinding.Binders
+@using Bookish.Controllers
+@model Bookish.Models.Book
+
+@{
+    ViewBag.Title = "Library's Catalogue Display";
+}
+<meta charset="UTF-8"></meta>
+<h2>Info and copies of @Model.Title by @Model.Author</h2>
+
+<table style="width:70%">
+    <tr>
+        <th>ISBN</th>
+        <th>Title</th>
+        <th>Author</th>
+    </tr>
+
+    <tr>
+        <td>@Model.Id</td>
+        <td>@Model.Title</td>
+        <td>@Model.Author</td>
+    </tr>
+
+</table>
+
+<p></p>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("AddCopy", "Book", FormMethod.Get))
+        {
+            <fieldset>
+
+                <legend>Add number of new copies</legend>
+                @Html.TextBoxFor(m => m.NumOfCopies) 
+                @Html.HiddenFor(m => m.Id, new {@Value = @Model.Id})
+                @Html.HiddenFor(m => m.Copies, new {@Value = @Model.Copies })
+                <p></p>
+
+                <input type="submit" value="Add" />
+            </fieldset>
+        }
+    </div>
+</div>
+
+<p></p>
+<p></p>
+
+
+<div class="container">
+
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Member</th>
+            <th>Due Date</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @{
+            foreach (var eachCopy in Model.Copies)
+                {
+                    <tr>
+                        <td>@eachCopy.Id</td>
+                        
+                        @if (@eachCopy.Member != null)
+                        {
+                            <td>@eachCopy.Member.MemberId</td>
+                            <td>@eachCopy.DueDate</td>
+
+                            <form id="myBook"> <input type="hidden" id="id" value="@eachCopy.Id"></input> </form>
+
+                            <td><input type="button" style="background-color:cornflowerblue" value="Check in" onclick="location.href='@Url.Action("CheckInCopy", "Book", new {bookCopyId = eachCopy.Id })'" /></td>
+                        }
+                        else 
+                        {
+                            <form id="myBook"> <input type="hidden" id="id" value="@eachCopy.Id"></input> </form>
+                        
+                            <td><input type="button" style="background-color:cornflowerblue" value="Checkout" onclick="location.href='@Url.Action("ToCheckout", "Book", new {bookCopyId = @eachCopy.Id })'" /></td>
+                            <td><input type="button" style="background-color:indianred" value="Delete" onclick="location.href='@Url.Action("DeleteCopy", "Book", new {bookCopyId = @eachCopy.Id, bookId = @eachCopy.Book.Id })'" /></td>
+                        }
+                        
+                    </tr>
+                }
+        }
+        </tbody>
+
+    </table>
+</div>
