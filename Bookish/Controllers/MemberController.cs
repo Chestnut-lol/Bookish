@@ -82,7 +82,7 @@ public class MemberController : Controller
         var members = _dbContext.Members
             .Where(m => m.Name == name);
         
-        return View("MemberQueryByNameOrEmail", members);
+        return View("MemberQueryByNameOrEmail", new MemberQueryByNameOrEmailModel(members.ToList()));
     }
     
     [HttpGet]
@@ -91,7 +91,7 @@ public class MemberController : Controller
         var members = _dbContext.Members
             .Where(m => m.Email == email);
         
-        return View("MemberQueryByNameOrEmail", members);
+        return View("MemberQueryByNameOrEmail", new MemberQueryByNameOrEmailModel(members.ToList()));
     }
 
     [HttpGet]

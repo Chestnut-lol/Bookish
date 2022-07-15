@@ -1,12 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Mvc.ModelBinding.Binders
-@model IQueryable<Bookish.Models.Member>
+@model MemberQueryByNameOrEmailModel
 
 @{
     ViewBag.Title = "Member Query Display";
 }
 <h3>Member Info</h3>
 <div class="row">
-    <table style="width:100%">
+    <table>
         <tr>
             <th>Member ID</th>
             <th>Name</th>
@@ -16,7 +16,7 @@
         </tr>
 
         @{
-            foreach (var member in Model)
+            foreach (var member in Model.ListOfMembers)
             {
                 <tr>
                     <td>@member.MemberId</td>
