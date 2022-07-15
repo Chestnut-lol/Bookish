@@ -51,7 +51,7 @@ public class BookController : Controller
     }
     
     [HttpGet]
-    public async Task<ActionResult> GetBook(BookSelection selection)
+    public IActionResult GetBook(BookSelection selection)
     {
         Book book = new Book();
         if (selection.Id != null)
@@ -125,7 +125,7 @@ public class BookController : Controller
 
 
     [HttpGet]
-    public async Task<ActionResult> AddBookInput(BookInput input)
+    public IActionResult AddBookInput(BookInput input)
     {
         string bookId = input.Id;
             var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
@@ -150,8 +150,8 @@ public class BookController : Controller
         return View();
     }
 
-    [HttpGet] //Should be changed to post? but gives error 405 when post is used but works with get
-    public async Task<ActionResult> BookSuccessfullyEdited(Book input)
+    [HttpPost] 
+    public IActionResult BookSuccessfullyEdited(Book input)
     {
         string bookId = input.Id;
         var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
@@ -164,25 +164,27 @@ public class BookController : Controller
         return View();
     }
     
-    [HttpGet]
+    [HttpPost]
     public IActionResult BookSuccessfullyDeleted(Book input)
     {
         string bookId = input.Id;
         var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
-        
-        
-        
         if (book == null) return View("BookNotDeleted");
+        
+        var bookCopies = _dbContext.BookCopies.Where(b=>b.Book.Id == input.Id).Include("Member").Include("Book").ToList();
+
+        foreach (BookCopy copy in bookCopies)
+        {
+            _dbContext.BookCopies.Remove(copy);
+        }
         
         _dbContext.Books.Remove(book);
         _dbContext.SaveChanges();
         return View();
     }
-    
-    
-    //Question about not using task: gives error
+
     [HttpGet]
-    public async Task<ActionResult> Catalogue()
+    public IActionResult Catalogue()
     {
         //string memberId = member.MemberId;
 
@@ -197,25 +199,6 @@ public class BookController : Controller
         
         return View(AllBooksList);
     }
-    
-    /*
-    public async Task<ActionResult> EditBook(Book book)
-    {
-        //string memberId = member.MemberId;
-
-        //var AllBooksList = new ListOfBooks();
-        //AllBooksList.AllBooks = _dbContext.Books.ToList().OrderBy(x => x.Searches).ToList();
-        //AllBooksList.AllBooks = Enumerable.Reverse(AllBooksList.AllBooks).ToList();
-        
-        //if (AllBooksList != null)
-        {
-            return View();
-        }
-        
-        return View();
-    }
-    */
-
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
