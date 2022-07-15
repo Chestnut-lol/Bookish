@@ -42,15 +42,17 @@ public class MemberController : Controller
     {
         if (member.MemberId != null)
         {
-            return SearchMemberById(member.MemberId);
+            return RedirectToAction(nameof(SearchMemberById), new { member.MemberId });
+            //return SearchMemberById(member.MemberId);
         }
         else if (member.Name != null)
         {
+            return RedirectToAction(nameof(SearchMemberByName), new { member.Name });
             return SearchMemberByName(member.Name);
         }
         else if (member.Email != null)
         {
-            return SearchMemberByEmail(member.Email);
+            return RedirectToAction(nameof(SearchMemberByEmail), new { member.Email });
         }
         else
         {
@@ -59,33 +61,35 @@ public class MemberController : Controller
     }
     
     [HttpGet]
-    private IActionResult SearchMemberById(string memberId)
+    public IActionResult SearchMemberById(string memberId)
     {
-        var memberModel = _dbContext.Members.SingleOrDefault(m => m.MemberId == memberId);
+        var memberModel = _dbContext.Members
+            .SingleOrDefault(m => m.MemberId == memberId);
         if (memberModel == null)
         {
             return View("ErrorMsg", new ErrorMsgModel("Member not found."));
         }
 
         var resultMember = _dbContext.Members
-            .Where(x => x.MemberId == memberId)
             .Include(m=>m.Books)
-            .Include("Books.Book")
-            .ToList()[0];
+            .ThenInclude(b=>b.Book)
+            .SingleOrDefault(m=>m.MemberId == memberId);
         return View("MemberQuery", resultMember);
     }
     [HttpGet]
-    private IActionResult SearchMemberByName(string name)
+    public IActionResult SearchMemberByName(string name)
     {
-        var members = _dbContext.Members.Where(m => m.Name == name);
+        var members = _dbContext.Members
+            .Where(m => m.Name == name);
         
         return View("MemberQueryByNameOrEmail", members);
     }
     
     [HttpGet]
-    private IActionResult SearchMemberByEmail(string email)
+    public IActionResult SearchMemberByEmail(string email)
     {
-        var members = _dbContext.Members.Where(m => m.Email == email);
+        var members = _dbContext.Members
+            .Where(m => m.Email == email);
         
         return View("MemberQueryByNameOrEmail", members);
     }
@@ -93,7 +97,8 @@ public class MemberController : Controller
     [HttpGet]
     public IActionResult EditMember(string memberId)
     {
-        var member = _dbContext.Members.SingleOrDefault(m => m.MemberId == memberId);
+        var member = _dbContext.Members
+            .SingleOrDefault(m => m.MemberId == memberId);
         return View(member);
     }
     
@@ -102,9 +107,10 @@ public class MemberController : Controller
     {
         var member = _dbContext.Members.Include(m => m.Books)
             .SingleOrDefault(m => m.MemberId == memberId);
-        // var member = _dbContext.Members.Where(m=>m.MemberId == memberId)
-        //    .Include(m => m.Books)
-        //    .ToList()[0];
+        if (member == null)
+        {
+            return View("ErrorMsg", new ErrorMsgModel("Member not found"));
+        }
         if (member.Books.Count != 0)
         {
             return View("ErrorMsg", new ErrorMsgModel("Unable to delete the member as lendings are not empty."));
@@ -143,7 +149,7 @@ public class MemberController : Controller
         member.MemberId = memberId;
         _dbContext.Members.Add(member);
         _dbContext.SaveChanges();
-        return View("ErrorMsg", new ErrorMsgModel($"Member added. Your member ID is {member.MemberId}."));
+        return View("Msg", new MsgModel($"Member added. Your member ID is {member.MemberId}."));
     }
     
     public static String GetTimestamp(DateTime value)
