@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Edit Book";
+}
+@model Bookish.Models.Book
+<div class="jumbotron">
+    <p class="lead">Input a book with information below</p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("BookSuccessfullyEdited", "Book", FormMethod.Post))
+        {
+            <fieldset>
+                <legend>ISBN of book you are editing: @Model.Id </legend>
+                @Html.HiddenFor(m => m.Id, new {@Value = @Model.Id})
+                <p></p>
+                <legend>Input edited Author:</legend>
+                @Html.TextBoxFor(m => m.Author)
+                <p></p>
+                <legend>Input edited Title:</legend>
+                @Html.TextBoxFor(m => m.Title)
+                <p></p>
+
+                <input type="submit" value="Input Book Info" />
+            </fieldset>
+        }
+    </div>
+</div>

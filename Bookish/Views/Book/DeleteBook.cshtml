@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Delete Book";
+}
+@model Bookish.Models.Book
+<div class="jumbotron">
+    <p class="lead">You are about to delete the following book</p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("BookSuccessfullyDeleted", "Book", FormMethod.Post))
+        {
+            
+            <table>
+                <tr>
+                    <th>ISBN</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                </tr>
+        
+                <tr>
+                    <td>@Model.Id</td>
+                    <td>@Model.Title</td>
+                    <td>@Model.Author</td>
+                </tr>
+            
+            </table>
+            <p></p>
+            
+            <fieldset>
+                @Html.HiddenFor(m => m.Id, new {@Value = @Model.Id})
+
+                <input type="submit" value="Delete" />
+            </fieldset>
+        }
+    </div>
+</div>

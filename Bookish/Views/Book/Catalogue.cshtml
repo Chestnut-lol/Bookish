@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.ModelBinding.Binders
-@model Bookish.Models.ListOfBooks
+@using Bookish.Controllers
+@model Bookish.Models.ListOfBooksForCatalogue
 
 @{
     ViewBag.Title = "Library's Catalogue Display";
@@ -8,9 +9,15 @@
 <h2>Library's Catalogue Display &#128512</h2>
 <h4>(In order of most searched)</h4>
 
-<div class="row">
 
-    <table style="width:100%">
+<hr><input type="button" class="bg-primary p-2 rounded-2" value="Add book" onclick="location.href='@Url.Action("AddBook", "Book")'" /></hr>
+
+<p></p> @*was trying to make space between the button and the table*@
+
+<div class="container">
+
+    <table class="table table-bordered table-striped">
+        <thead>
         <tr>
             <th>ISBN</th>
             <th>Title</th>
@@ -19,31 +26,27 @@
             <th>Number of available copies</th>
             <th>Number of searches</th>
         </tr>
-        
+        </thead>
+
+        <tbody>
         @{
-            if (Model.AllBooks.Count >= 1)
+            foreach (var eachBook in Model.AllBooks)
             {
-                foreach (var bookCopy in Model.AllBooks)
-                {
-       
-                    <tr>
-                        <td>@bookCopy.Id</td>
-                        <td>@bookCopy.Title</td>
-                        <td>@bookCopy.Author</td>
-                        <td>@bookCopy.NumOfCopies</td>
-                        <td>@bookCopy.NumOfAvailableCopies</td>
-                        <td>@bookCopy.Searches</td>
-                        <td><button class="editbtn">Edit</button></td>
-                        <td><li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Edit</a>
-                        </li></td>
-                    </tr>
-                }
+                <tr>
+                    <td>@eachBook.Id</td>
+                    <td>@eachBook.Title</td>
+                    <td>@eachBook.Author</td>
+                    <td>@eachBook.NumOfCopies</td>
+                    <td>@eachBook.NumOfAvailableCopies</td>
+                    <td>@eachBook.Searches</td>
+
+                    <td><input type="button" class="bg-primary p-2 rounded-1" value="Edit" onclick="location.href='@Url.Action("EditBook", "Book", new {bookId = @eachBook.Id })'" /></td>
+                    <td><input type="button" class="bg-primary p-2 rounded-1" value="Delete" onclick="location.href='@Url.Action("DeleteBook", "Book", new {bookId = @eachBook.Id })'" /></td>
+
+                </tr>
             }
         }
+        </tbody>
 
     </table>
-    <p></p>
-    
-  
 </div>

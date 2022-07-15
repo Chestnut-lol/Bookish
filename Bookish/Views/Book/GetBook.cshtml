@@ -11,14 +11,13 @@
     <p>You searched for the book with ISBN: @Model.Id</p>
     
     
-    <table style="width:100%">
+    <table>
         <tr>
             <th>ISBN</th>
             <th>Title</th>
             <th>Author</th>
             <th>Number of total copies</th>
             <th>Number of available copies</th>
-            <th>Member ID associated</th>
         </tr>
         
         <tr>
@@ -27,7 +26,6 @@
             <td>@Model.Author</td>
             <td>@Model.NumOfCopies</td>
             <td>@Model.NumOfAvailableCopies</td>
-            <td>@Model.Copies[0].Member.MemberId</td>
         </tr>
             
     </table>
