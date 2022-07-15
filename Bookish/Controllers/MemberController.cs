@@ -36,24 +36,35 @@ public class MemberController : Controller
         return View(new MemberCatalogueModel(_dbContext.Members.ToList()));
     }
     
-    public IActionResult SortCatalogue(string by)
+    public IActionResult SortCatalogue(string by, bool descending = false)
     {
         List<Member> members;
         if (by == "MemberId")
         {
+            
             members = _dbContext.Members.OrderBy(m => m.MemberId).ToList();
+            
+            
         }
         else if (by == "Name")
         {
             members = _dbContext.Members.OrderBy(m => m.Name).ToList();
+            
         }
         else if (by == "Email")
         {
+            
+            
             members = _dbContext.Members.OrderBy(m => m.Email).ToList();
+            
         }
         else
         {
             return View("ErrorMsg", new ErrorMsgModel("Field does not exist!"));
+        }
+        if (descending)
+        {
+            members.Reverse();
         }
         return View("MemberCatalogue", new MemberCatalogueModel(members));
     }

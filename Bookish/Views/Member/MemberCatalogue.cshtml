@@ -12,18 +12,30 @@
     <table>
         <tr>
             <th>Member ID
+                
                 <a href=@Url.Action("SortCatalogue", "Member", new { by = "MemberId" })>
                     <i class="bi bi-sort-numeric-down"></i>
                 </a>
-                </th>
+            
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "MemberId", descending = true })>
+                    <i class="bi bi-sort-numeric-down-alt"></i>
+                </a>
+
+            </th>
             <th>Name 
-                <a href=@Url.Action("SortCatalogue", "Member", new { by = "Name" })>
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "Name", descending = false })>
                     <i class="bi bi-sort-alpha-down"></i>
+                </a>
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "Name" , descending = true})>
+                    <i class="bi bi-sort-alpha-down-alt"></i>
                 </a>
                 </th>
             <th>Email
-                <a href=@Url.Action("SortCatalogue", "Member", new { by = "Email" })>
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "Email", descending = false})>
                     <i class="bi bi-sort-alpha-down"></i>
+                </a>
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "Email", descending = true})>
+                    <i class="bi bi-sort-alpha-down-alt"></i>
                 </a>
                 </th>
             
