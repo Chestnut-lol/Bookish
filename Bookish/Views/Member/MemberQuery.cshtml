@@ -4,7 +4,6 @@
 @{
     ViewBag.Title = "Member Info";
 }
-<meta charset="UTF-8"></meta>
 <h3>Member Info</h3>
 
 <div class="row">
@@ -13,22 +12,12 @@
     <p>Email: @Model.Email </p>
     @Html.ActionLink("Edit", "EditMember", new{Model.MemberId}, FormMethod.Get)
     @Html.ActionLink("Delete", "ConfirmDeleteMember", new{Model.MemberId}, FormMethod.Get)
-    @*@using (Html.BeginForm("EditMember", "Member", new{Model.MemberId}, FormMethod.Get))
-    {
-        <fieldset>
-            $1$<legend>Enter Member ID:</legend>
-            @Html.TextBoxFor(m => m.MemberId) $2$new {@Value = "Postcode", @placeholder = "Postcode", pattern = @"([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})"})
-            #2##1#
-            <input type="submit" value="Edit" />
-            
-        </fieldset>
-    }*@
 </div>
 <br>
 
 <div class="row">
     <h3>Current lendings</h3>
-    <table style="width:100%">
+    <table>
         <tr>
             <th>ISBN</th>
             <th>Title</th>
@@ -49,9 +38,7 @@
                 </tr>
             }
         }
-
     </table>
-    <p></p>
 </div>
     
     
