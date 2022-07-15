@@ -20,21 +20,21 @@ public class BookController : Controller
     }
 
     
-
+    [HttpGet]
     public IActionResult AddBook()
     {
         return View();
     }
     
+    [HttpGet]
     public IActionResult CheckoutSelection()
     {
         return View();
     }
     
     [HttpGet]
-    public IActionResult EditBook(string parameter1)
+    public IActionResult EditBook(string bookId)
     {
-        string bookId = parameter1;
         using (var context = new EFCore())
         {
             var book = context.Books.Find(bookId);
@@ -44,22 +44,19 @@ public class BookController : Controller
     
     
     [HttpGet]
-    public IActionResult DeleteBook(string parameter1)
+    public IActionResult DeleteBook(string bookId)
     {
-        string bookId = parameter1;
         using (var context = new EFCore())
         {
-            var book = context.Books.Find(bookId);
+            // var book = _dbContext.Books
+            //     .Where(x => x.Id == bookId)
+            //     .ToList()[0];
+            var book = _dbContext.Books
+                .SingleOrDefault(x => x.Id == bookId);
             return View(book);
         }
     }
-    
-    
-    
-    
-    
 
-    
     public async Task<ActionResult> BookQuery(BookSelection selection)
     {
         Book book = new Book();
