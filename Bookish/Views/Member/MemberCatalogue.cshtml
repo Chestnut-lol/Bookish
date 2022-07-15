@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNetCore.Mvc.ModelBinding.Binders
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@model Bookish.Models.MemberCatalogueModel
+
+@{
+    ViewBag.Title = "Member Catalogue";
+}
+<h3>Member Info</h3>
+
+<br/>
+<div class="row">
+    <table>
+        <tr>
+            <th>Member ID
+                
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "MemberId" })>
+                    <i class="bi bi-sort-numeric-down"></i>
+                </a>
+            
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "MemberId", descending = true })>
+                    <i class="bi bi-sort-numeric-down-alt"></i>
+                </a>
+
+            </th>
+            <th>Name 
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "Name", descending = false })>
+                    <i class="bi bi-sort-alpha-down"></i>
+                </a>
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "Name" , descending = true})>
+                    <i class="bi bi-sort-alpha-down-alt"></i>
+                </a>
+                </th>
+            <th>Email
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "Email", descending = false})>
+                    <i class="bi bi-sort-alpha-down"></i>
+                </a>
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "Email", descending = true})>
+                    <i class="bi bi-sort-alpha-down-alt"></i>
+                </a>
+                </th>
+            
+            <th>View details</th>
+            
+        </tr>
+
+        @{
+            foreach (var member in Model.ListOfMembers)
+            {
+                <tr>
+                    <td>@member.MemberId</td>
+                    <td>@member.Name</td>
+                    <td>@member.Email</td>
+                    <td>@Html.ActionLink("View","MemberQuery",member,FormMethod.Get)</td>
+                </tr>
+            }
+        }
+
+    </table>
+    <p></p>
+</div>
+    
+    
+  
+

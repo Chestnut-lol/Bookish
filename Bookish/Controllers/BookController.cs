@@ -26,7 +26,6 @@ public class BookController : Controller
         return View();
     }
     
-    //This action wont be used in this version
     [HttpGet]
     public IActionResult CheckoutSelection()
     {
@@ -48,14 +47,12 @@ public class BookController : Controller
     [HttpGet]
     public IActionResult DeleteBook(string bookId)
     {
-        using (var context = new EFCore())
-        {
-            var book = context.Books.Find(bookId);
-            return View(book);
-        }
+         var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
+         return View(book);
     }
     
     [HttpGet]
+
     public IActionResult CopiesOfBook(string bookId)
     {
         var book = _dbContext.Books.Include(b => b.Copies).Include("Copies.Member").SingleOrDefault(b => b.Id == bookId);
@@ -151,24 +148,21 @@ public class BookController : Controller
     }
 
     
-    public async Task<ActionResult> BookQuery(BookSelection selection)
+
+    public IActionResult GetBook(BookSelection selection)
+
     {
         Book book = new Book();
         if (selection.Id != null)
         {
-            
-            book = _dbContext.Books
-                .Where(x => x.Id == selection.Id)
-                .Include(b => b.Copies)
-                .Include("Copies.Member")
-                .ToList()[0];
+            book = _dbContext.Books.SingleOrDefault(x => x.Id == selection.Id);
             book.Searches += 1;
             _dbContext.SaveChanges();
         }
         return View(book);
     }
    
-    public async Task<ActionResult> CheckoutBook(CheckoutSelection selection)
+    /*public async Task<ActionResult> CheckoutBook(CheckoutSelection selection)
     {
         BookCopy bookCopy = new BookCopy();
         if (VerifyMemberId(selection.MemberId))
@@ -198,7 +192,7 @@ public class BookController : Controller
 
         
         
-    }
+    }*/
 
     /*private BookInfo SearchBookByAuthor(string author)
     {
@@ -230,85 +224,76 @@ public class BookController : Controller
 
 
     [HttpGet]
-    public async Task<ActionResult> BookInput(BookInput input)
+    public IActionResult AddBookInput(BookInput input)
     {
         string bookId = input.Id;
-        using (var context = new EFCore())
-        {
-            var book = context.Books.Find(bookId);
+            var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
             if (book != null)
             {
                 book.NumOfCopies += 1;
                 book.NumOfAvailableCopies += 1;
-                Console.WriteLine("Book found! Added another copy to the db.");
             }
             else
-
             { 
                 book = new Book()
                 {
+
                     Id = GetTimestamp(DateTime.Now),
+
                     Title = input.Title,
                     Author = input.Author,
                     NumOfCopies = 1,
                     NumOfAvailableCopies = 1,
                 };
-                context.Books.Add(book);
+                _dbContext.Books.Add(book);
             }
-            context.SaveChanges();
+
+
+            _dbContext.SaveChanges();
+
+        return View();
+    }
+
+    [HttpPost] 
+    public IActionResult BookSuccessfullyEdited(Book input)
+    {
+        string bookId = input.Id;
+        var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
+
+        if (book == null) return View("BookNotEdited");
+            
+        if (input.Title != null) book.Title = input.Title;
+        if (input.Author != null) book.Author = input.Author;
+        _dbContext.SaveChanges();
+        return View();
+    }
+    
+    [HttpPost]
+    public IActionResult BookSuccessfullyDeleted(Book input)
+    {
+        string bookId = input.Id;
+
+        var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
+        if (book == null) return View("BookNotDeleted");
+        
+        var bookCopies = _dbContext.BookCopies.Where(b=>b.Book.Id == input.Id).Include("Member").Include("Book").ToList();
+
+        foreach (BookCopy copy in bookCopies)
+        {
+            _dbContext.BookCopies.Remove(copy);
         }
+        
+        _dbContext.Books.Remove(book);
+        _dbContext.SaveChanges();
         return View();
     }
 
     [HttpGet]
-    public async Task<ActionResult> BookEdited(Book input)
-    {
-        string bookId = input.Id;
-        using (var context = new EFCore())
-        {
-            var book = context.Books.Find(bookId);
-            if (book != null)
-            {
-                if (input.Title != null) book.Title = input.Title;
-                if (input.Author != null) book.Author = input.Author;
-                context.SaveChanges();
-                return View();
-            }
-
-            return View("BookNotEdited");
-        }
-    }
-    
-    [HttpGet]
-    public async Task<ActionResult> BookDeleted(Book input)
-    {
-        string bookId = input.Id;
-        using (var context = new EFCore())
-        {
-            var book = context.Books.Find(bookId);
-            var bookCopies = _dbContext.BookCopies.Where(b=>b.Book.Id == input.Id).Include("Member").Include("Book").ToList();
-            
-            if (book != null)
-            {
-                foreach (BookCopy copy in bookCopies)
-                {
-                    context.BookCopies.Remove(copy);
-                }
-                context.Books.Remove(book);
-                context.SaveChanges();
-                return View();
-            }
-
-            return View("BookNotEdited");
-        }
-    }
-
-
-    public async Task<ActionResult> Catalogue()
+    public IActionResult Catalogue()
     {
         //string memberId = member.MemberId;
 
-        var AllBooksList = new ListOfBooks();
+        var AllBooksList = new ListOfBooksForCatalogue();
         AllBooksList.AllBooks = _dbContext.Books.ToList().OrderBy(x => x.Searches).ToList();
         AllBooksList.AllBooks = Enumerable.Reverse(AllBooksList.AllBooks).ToList();
         
@@ -320,23 +305,7 @@ public class BookController : Controller
         return View(AllBooksList);
     }
     
-    /*
-    public async Task<ActionResult> EditBook(Book book)
-    {
-        //string memberId = member.MemberId;
 
-        //var AllBooksList = new ListOfBooks();
-        //AllBooksList.AllBooks = _dbContext.Books.ToList().OrderBy(x => x.Searches).ToList();
-        //AllBooksList.AllBooks = Enumerable.Reverse(AllBooksList.AllBooks).ToList();
-        
-        //if (AllBooksList != null)
-        {
-            return View();
-        }
-        
-        return View();
-    }
-    */
 
     [HttpPost]
     public async Task<ActionResult> CheckAction(string btnString)
@@ -370,7 +339,6 @@ public class BookController : Controller
     
 
 
-    
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

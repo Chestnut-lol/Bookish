@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Bookish.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.VisualBasic;
 
 namespace Bookish.Controllers;
 
@@ -28,54 +30,164 @@ public class MemberController : Controller
         return View();
     }
     
-    
-    public async Task<ActionResult> MemberQuery(Member member)
+    [HttpGet]
+    public IActionResult MemberCatalogue()
     {
-        string memberId = member.MemberId;
-        
-        
-        member = _dbContext.Members
-            .Where(x => x.MemberId == memberId)
+        return View(new MemberCatalogueModel(_dbContext.Members.ToList()));
+    }
+    
+    public IActionResult SortCatalogue(string by, bool descending = false)
+    {
+        List<Member> members;
+        if (by == "MemberId")
+        {
+            
+            members = _dbContext.Members.OrderBy(m => m.MemberId).ToList();
+            
+            
+        }
+        else if (by == "Name")
+        {
+            members = _dbContext.Members.OrderBy(m => m.Name).ToList();
+            
+        }
+        else if (by == "Email")
+        {
+            
+            
+            members = _dbContext.Members.OrderBy(m => m.Email).ToList();
+            
+        }
+        else
+        {
+            return View("ErrorMsg", new ErrorMsgModel("Field does not exist!"));
+        }
+        if (descending)
+        {
+            members.Reverse();
+        }
+        return View("MemberCatalogue", new MemberCatalogueModel(members));
+    }
+    
+    
+    [HttpPost]
+    public IActionResult MemberQuery(Member member)
+    {
+        if (member.MemberId != null)
+        {
+            return RedirectToAction(nameof(SearchMemberById), new { member.MemberId });
+            //return SearchMemberById(member.MemberId);
+        }
+        else if (member.Name != null)
+        {
+            return RedirectToAction(nameof(SearchMemberByName), new { member.Name });
+            return SearchMemberByName(member.Name);
+        }
+        else if (member.Email != null)
+        {
+            return RedirectToAction(nameof(SearchMemberByEmail), new { member.Email });
+        }
+        else
+        {
+            return View("ErrorMsg", new ErrorMsgModel("You did not input anything! :("));
+        }
+    }
+    
+    [HttpGet]
+    public IActionResult SearchMemberById(string memberId)
+    {
+        var memberModel = _dbContext.Members
+            .SingleOrDefault(m => m.MemberId == memberId);
+        if (memberModel == null)
+        {
+            return View("ErrorMsg", new ErrorMsgModel("Member not found."));
+        }
+
+        var resultMember = _dbContext.Members
             .Include(m=>m.Books)
-            .Include("Books.Book")
-            .ToList()[0];
-        if (member != null)
-        {
-            return View(member);
-        }
+            .ThenInclude(b=>b.Book)
+            .SingleOrDefault(m=>m.MemberId == memberId);
+        return View("MemberQuery", resultMember);
+    }
+    [HttpGet]
+    public IActionResult SearchMemberByName(string name)
+    {
+        var members = _dbContext.Members
+            .Where(m => m.Name == name);
         
-        Member resultMember = new Member();
-        return View(resultMember);
-    }
-
-
-    
-
-    
-    private bool VerifyMemberId(string memberId)
-    {
-        return (_dbContext.Members.Find(memberId) != null);
+        return View("MemberQueryByNameOrEmail", new MemberQueryByNameOrEmailModel(members.ToList()));
     }
     
-    
-    public async Task<ActionResult> MemberInput(MemberInput input)
+    [HttpGet]
+    public IActionResult SearchMemberByEmail(string email)
     {
-        string memberId = input.Id;
-        using (var context = new EFCore())
+        var members = _dbContext.Members
+            .Where(m => m.Email == email);
+        
+        return View("MemberQueryByNameOrEmail", new MemberQueryByNameOrEmailModel(members.ToList()));
+    }
+
+    [HttpGet]
+    public IActionResult EditMember(string memberId)
+    {
+        var member = _dbContext.Members
+            .SingleOrDefault(m => m.MemberId == memberId);
+        return View(member);
+    }
+    
+    [HttpGet]
+    public IActionResult ConfirmDeleteMember(string memberId)
+    {
+        var member = _dbContext.Members.Include(m => m.Books)
+            .SingleOrDefault(m => m.MemberId == memberId);
+        if (member == null)
         {
-            var member = context.Members.Find(memberId);
-            if (member == null)
-            {
-                member = new Member()
-                {
-                    MemberId = memberId
-                };
-                context.Members.Add(member);
-                context.SaveChanges();
-
-            }
+            return View("ErrorMsg", new ErrorMsgModel("Member not found"));
         }
-        return View();
+        if (member.Books.Count != 0)
+        {
+            return View("ErrorMsg", new ErrorMsgModel("Unable to delete the member as lendings are not empty."));
+        }
+        return View("ConfirmDeleteMember",member);
+    }
+    
+    [HttpDelete]
+    public IActionResult DeleteMember(Member member)
+    {
+        _dbContext.Members.Remove(member);
+        _dbContext.SaveChanges();
+        return RedirectToAction(nameof(MemberCatalogue));
+        return View("ErrorMsg", new ErrorMsgModel("Member deleted."));
+    }
+    
+    [HttpPost]
+    public IActionResult MemberChange(Member inputMember)
+    {
+        // var member = _dbContext.Members.Find(memberId);
+        var member = _dbContext.Members
+            .Where(x => x.MemberId == inputMember.MemberId)
+            .Include(m=>m.Books)
+            .ThenInclude(b=>b.Book)
+            .ToList()[0];
+        member.Name = inputMember.Name;
+        member.Email = inputMember.Email;
+        _dbContext.SaveChanges();
+        return View("MemberQuery", member );
+    }
+
+    [HttpPost]
+    public IActionResult AddMemberToDb(Member member)
+    {
+        string memberId = GetTimestamp(DateTime.Now);
+        member.MemberId = memberId;
+        _dbContext.Members.Add(member);
+        _dbContext.SaveChanges();
+        return View("Msg", new MsgModel($"Member added. Your member ID is {member.MemberId}."));
+    }
+    
+    public static String GetTimestamp(DateTime value)
+    {
+        return value.ToString("yyMMddHHmmssff");
     }
     
     

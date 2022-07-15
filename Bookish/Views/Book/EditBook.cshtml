@@ -8,11 +8,11 @@
 
 <div class="row">
     <div class="col-md-12">
-        @using (Html.BeginForm("BookEdited", "Book", FormMethod.Get))
+        @using (Html.BeginForm("BookSuccessfullyEdited", "Book", FormMethod.Post))
         {
             <fieldset>
                 <legend>ISBN of book you are editing: @Model.Id </legend>
-                @Html.TextBoxFor(m => m.Id, new {@Value = @Model.Id})
+                @Html.HiddenFor(m => m.Id, new {@Value = @Model.Id})
                 <p></p>
                 <legend>Input edited Author:</legend>
                 @Html.TextBoxFor(m => m.Author)
