@@ -56,29 +56,33 @@ public class BookController : Controller
     }
     
     [HttpGet]
-    public IActionResult CopiesOfBook(string parameter1)
+    public IActionResult CopiesOfBook(string bookId)
     {
-        string bookId = parameter1;
-        using (var context = new EFCore())
-        {
-            var book = _dbContext.Books.Where(x => x.Id == parameter1).Include(b => b.Copies).ToList()[0];
-            return View(book);
-        }
+        var book = _dbContext.Books.Include(b => b.Copies).Include("Copies.Member").SingleOrDefault(b => b.Id == bookId);
+        return View(book);
+
     }
     
     [HttpGet]
-    public IActionResult ToCheckout(BookCopy bookCopy)
+    public IActionResult ToCheckout(string bookCopyId)
     {
-        /*using (var context = new EFCore())
-        {
-            if (bookCopy != null && (_dbContext.BookCopies.Find(bookCopy.Id) != null))
-            {
-                var bookCopy = _dbContext.BookCopies.Include("Member").Include("Book").Where(x => x.Id == bookCopy.Id).ToList()[0];
-                return View(bookCopy);
-            }
-            return View();
-        }*/
+        var bookCopy = _dbContext.BookCopies.Include(b => b.Book).Include(b => b.Member).SingleOrDefault(b => b.Id == bookCopyId);
         return View(bookCopy);
+    }
+    
+    
+    [HttpPost]
+    public IActionResult CheckoutCopy(BookCopy checkedOutCopy)
+    {
+        var bookCopy = _dbContext.BookCopies.Include(b => b.Book).Include(b => b.Member).SingleOrDefault(x => x.Id == checkedOutCopy.Id);
+        var member = _dbContext.Members.SingleOrDefault(x => x.MemberId == checkedOutCopy.Member.MemberId);
+        //book.NumOfAvailableCopies -= 1;
+        bookCopy.Member = member;
+        bookCopy.DueDate = DateTime.Now.AddDays(14);
+        _dbContext.SaveChanges();
+        
+        var book = _dbContext.Books.Include(b => b.Copies).Include("Copies.Member").SingleOrDefault(b => b.Id == bookCopy.Book.Id);
+        return View("CopiesOfBook", book);
     }
     
     [HttpGet]
@@ -346,28 +350,19 @@ public class BookController : Controller
         return View("Catalogue");
     }
     
-    [HttpPost]
-    public async Task<ActionResult> DeleteCopy(Book input)
+    [HttpGet]
+    public IActionResult DeleteCopy(string bookCopyId, string bookId)
     {
-        string bookId = input.Id;
-        using (var context = new EFCore())
-        {
-            var book = context.Books.Find(bookId);
-            var bookCopies = _dbContext.BookCopies.Where(b=>b.Book.Id == input.Id).Include("Member").Include("Book").ToList();
-            
-            if (book != null)
-            {
-                foreach (BookCopy copy in bookCopies)
-                {
-                    context.BookCopies.Remove(copy);
-                }
-                context.Books.Remove(book);
-                context.SaveChanges();
-                return View();
-            }
+        var copy = _dbContext.BookCopies.SingleOrDefault(b => b.Id == bookCopyId);
 
-            return View("BookNotEdited");
-        }
+        if (copy == null) return View("BookNotEdited");
+            
+       _dbContext.BookCopies.Remove(copy);
+       _dbContext.SaveChanges();
+       
+       var book = _dbContext.Books.Include(b => b.Copies).Include("Copies.Member").SingleOrDefault(b => b.Id == bookId);
+
+       return View("CopiesOfBook", book);
     }
 
     

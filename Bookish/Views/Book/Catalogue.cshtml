@@ -51,9 +51,9 @@
                         
                         @{btnBook = eachBook;}
                         
-                        <td><input type="button" style="background-color:cornflowerblue" value="View Copies" onclick="location.href='@Url.Action("CopiesOfBook", "Book", new {parameter1 = @eachBook.Id })'" /></td>
-                        <td><input type="button" style="background-color:indianred" value="Delete" onclick="location.href='@Url.Action("DeleteBook", "Book", new {parameter1 = @eachBook.Id })'" /></td>
-                        <td><input type="button" style="background-color:cornflowerblue" value="Edit" onclick="location.href='@Url.Action("EditBook", "Book", new {parameter1 = @eachBook.Id })'" /></td>
+                        <td><input type="button" style="background-color:cornflowerblue" value="View Copies" onclick="location.href='@Url.Action("CopiesOfBook", "Book", new {bookId = @eachBook.Id })'" /></td>
+                        <td><input type="button" style="background-color:indianred" value="Delete" onclick="location.href='@Url.Action("DeleteBook", "Book", new {bookId = @eachBook.Id })'" /></td>
+                        <td><input type="button" style="background-color:cornflowerblue" value="Edit" onclick="location.href='@Url.Action("EditBook", "Book", new {bookId = @eachBook.Id })'" /></td>
                     </tr>
                 }
             }

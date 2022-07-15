@@ -8,14 +8,14 @@
 
 <div class="row">
     <div class="col-md-12">
-        @using (Html.BeginForm("CheckoutBook", "Book", FormMethod.Get))
+        @using (Html.BeginForm("CheckoutCopy", "Book", FormMethod.Post))
         {
             <fieldset>
 
+                @Html.HiddenFor(checkedOutCopy => checkedOutCopy.Book, new {@Value = @Model.Book})
+                @Html.HiddenFor(checkedOutCopy => checkedOutCopy.Id, new {@Value = @Model.Id})
                 <legend>Input Id of member checking out this book:</legend>
-                @Html.TextBoxFor(m => m.Member.MemberId) 
-                @Html.HiddenFor(m => m.Book, new {@Value = @Model.Book})
-                @Html.HiddenFor(m => m.Id, new {@Value = @Model.Id})
+                @Html.TextBoxFor(checkedOutCopy => checkedOutCopy.Member.MemberId)
                 <p></p>
 
 
