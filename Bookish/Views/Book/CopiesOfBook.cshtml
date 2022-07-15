@@ -76,7 +76,7 @@
                             btnBookCopy = eachCopy;
 
                             <td><input type="button" style="background-color:cornflowerblue" value="Check in" onclick="location.href='@Url.Action("CheckoutBook", "Book", new {bookCopyId = @btnBookCopy.Id })'" /></td>
-                            <td><input type="button" style="background-color:indianred" value="Delete" onclick="location.href='@Url.Action("DeleteBook", "Book", new {bookCopyId = @btnBookCopy.Id })'" /></td>
+                            <td><input type="button" style="background-color:indianred" value="Delete" onclick="location.href='@Url.Action("DeleteCopy", "Book", new {bookCopyId = @btnBookCopy.Id })'" /></td>
                         }
                         else 
                         {

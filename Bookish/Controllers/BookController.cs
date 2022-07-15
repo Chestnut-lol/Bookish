@@ -345,6 +345,30 @@ public class BookController : Controller
 
         return View("Catalogue");
     }
+    
+    [HttpPost]
+    public async Task<ActionResult> DeleteCopy(Book input)
+    {
+        string bookId = input.Id;
+        using (var context = new EFCore())
+        {
+            var book = context.Books.Find(bookId);
+            var bookCopies = _dbContext.BookCopies.Where(b=>b.Book.Id == input.Id).Include("Member").Include("Book").ToList();
+            
+            if (book != null)
+            {
+                foreach (BookCopy copy in bookCopies)
+                {
+                    context.BookCopies.Remove(copy);
+                }
+                context.Books.Remove(book);
+                context.SaveChanges();
+                return View();
+            }
+
+            return View("BookNotEdited");
+        }
+    }
 
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
