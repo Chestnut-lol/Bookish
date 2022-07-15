@@ -235,7 +235,7 @@ public class BookController : Controller
             { 
                 book = new Book()
                 {
-                    Id = (context.Books.Count() + 1).ToString(),
+                    Id = GetTimestamp(DateTime.Now),
                     Title = input.Title,
                     Author = input.Author,
                     NumOfCopies = 1,
@@ -244,15 +244,6 @@ public class BookController : Controller
                 context.Books.Add(book);
             }
             context.SaveChanges();
-            
-            
-            
-            
-                Console.WriteLine($"Here is your book with the Id {input.Id}");
-                Console.WriteLine($"Book name: {book.Title}");
-                Console.WriteLine($"Author: {book.Author}");
-                Console.WriteLine($"Number of available copies: {book.NumOfCopies}");
-                
         }
         return View();
     }
