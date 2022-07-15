@@ -46,35 +46,24 @@ public class BookController : Controller
     [HttpGet]
     public IActionResult DeleteBook(string bookId)
     {
-        using (var context = new EFCore())
-        {
-            // var book = _dbContext.Books
-            //     .Where(x => x.Id == bookId)
-            //     .ToList()[0];
-            var book = _dbContext.Books
-                .SingleOrDefault(x => x.Id == bookId);
+            var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
             return View(book);
-        }
     }
-
-    public async Task<ActionResult> BookQuery(BookSelection selection)
+    
+    [HttpGet]
+    public async Task<ActionResult> GetBook(BookSelection selection)
     {
         Book book = new Book();
         if (selection.Id != null)
         {
-            
-            book = _dbContext.Books
-                .Where(x => x.Id == selection.Id)
-                .Include(b => b.Copies)
-                .Include("Copies.Member")
-                .ToList()[0];
+            book = _dbContext.Books.SingleOrDefault(x => x.Id == selection.Id);
             book.Searches += 1;
             _dbContext.SaveChanges();
         }
         return View(book);
     }
    
-    public async Task<ActionResult> CheckoutBook(CheckoutSelection selection)
+    /*public async Task<ActionResult> CheckoutBook(CheckoutSelection selection)
     {
         BookCopy bookCopy = new BookCopy();
         if (VerifyMemberId(selection.MemberId))
@@ -104,7 +93,7 @@ public class BookController : Controller
 
         
         
-    }
+    }*/
 
     /*private BookInfo SearchBookByAuthor(string author)
     {
@@ -136,88 +125,68 @@ public class BookController : Controller
 
 
     [HttpGet]
-    public async Task<ActionResult> BookInput(BookInput input)
+    public async Task<ActionResult> AddBookInput(BookInput input)
     {
         string bookId = input.Id;
-        using (var context = new EFCore())
-        {
-            var book = context.Books.Find(bookId);
+            var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
             if (book != null)
             {
                 book.NumOfCopies += 1;
                 book.NumOfAvailableCopies += 1;
-                Console.WriteLine("Book found! Added another copy to the db.");
             }
             else
-
             { 
                 book = new Book()
                 {
-                    Id = (context.Books.Count() + 1).ToString(),
+                    Id = (_dbContext.Books.Count() + 1).ToString(),
                     Title = input.Title,
                     Author = input.Author,
                     NumOfCopies = 1,
                     NumOfAvailableCopies = 1,
                 };
-                context.Books.Add(book);
+                _dbContext.Books.Add(book);
             }
-            context.SaveChanges();
-            
-            
-            
-            
-                Console.WriteLine($"Here is your book with the Id {input.Id}");
-                Console.WriteLine($"Book name: {book.Title}");
-                Console.WriteLine($"Author: {book.Author}");
-                Console.WriteLine($"Number of available copies: {book.NumOfCopies}");
-                
-        }
+            _dbContext.SaveChanges();
         return View();
     }
 
-    [HttpGet]
-    public async Task<ActionResult> BookEdited(Book input)
+    [HttpGet] //Should be changed to post? but gives error 405 when post is used but works with get
+    public async Task<ActionResult> BookSuccessfullyEdited(Book input)
     {
         string bookId = input.Id;
-        using (var context = new EFCore())
-        {
-            var book = context.Books.Find(bookId);
-            if (book != null)
-            {
-                if (input.Title != null) book.Title = input.Title;
-                if (input.Author != null) book.Author = input.Author;
-                context.SaveChanges();
-                return View();
-            }
+        var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
 
-            return View("BookNotEdited");
-        }
+        if (book == null) return View("BookNotEdited");
+            
+        if (input.Title != null) book.Title = input.Title;
+        if (input.Author != null) book.Author = input.Author;
+        _dbContext.SaveChanges();
+        return View();
     }
     
     [HttpGet]
-    public async Task<ActionResult> BookDeleted(Book input)
+    public IActionResult BookSuccessfullyDeleted(Book input)
     {
         string bookId = input.Id;
-        using (var context = new EFCore())
-        {
-            var book = context.Books.Find(bookId);
-            if (book != null)
-            {
-                context.Books.Remove(book);
-                context.SaveChanges();
-                return View();
-            }
-
-            return View("BookNotEdited");
-        }
+        var book = _dbContext.Books.SingleOrDefault(x => x.Id == bookId);
+        
+        
+        
+        if (book == null) return View("BookNotDeleted");
+        
+        _dbContext.Books.Remove(book);
+        _dbContext.SaveChanges();
+        return View();
     }
-
-
+    
+    
+    //Question about not using task: gives error
+    [HttpGet]
     public async Task<ActionResult> Catalogue()
     {
         //string memberId = member.MemberId;
 
-        var AllBooksList = new ListOfBooks();
+        var AllBooksList = new ListOfBooksForCatalogue();
         AllBooksList.AllBooks = _dbContext.Books.ToList().OrderBy(x => x.Searches).ToList();
         AllBooksList.AllBooks = Enumerable.Reverse(AllBooksList.AllBooks).ToList();
         
@@ -246,21 +215,6 @@ public class BookController : Controller
         return View();
     }
     */
-
-    [HttpPost]
-    public async Task<ActionResult> CheckAction(string btnString)
-    {
-        if (btnString == "edit")
-        {
-            return View("EditBook");
-        }
-        else if (btnString == "delete")
-        {
-            return View("DeleteBook");
-        }
-
-        return View("Catalogue");
-    }
 
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
