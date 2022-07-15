@@ -72,8 +72,7 @@
 
                             <form id="myBook"> <input type="hidden" id="id" value="@eachCopy.Id"></input> </form>
 
-                            <td><input type="button" style="background-color:cornflowerblue" value="Check in" onclick="location.href='@Url.Action("CheckoutBook", "Book", new {bookCopyId = @eachCopy.Id })'" /></td>
-                            <td><input type="button" style="background-color:indianred" value="Delete" onclick="location.href='@Url.Action("DeleteCopy", "Book", new {bookCopyId = @eachCopy.Id })'" /></td>
+                            <td><input type="button" style="background-color:cornflowerblue" value="Check in" onclick="location.href='@Url.Action("CheckInCopy", "Book", new {bookCopyId = eachCopy.Id })'" /></td>
                         }
                         else 
                         {

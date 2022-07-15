@@ -86,6 +86,18 @@ public class BookController : Controller
     }
     
     [HttpGet]
+    public IActionResult CheckInCopy(string bookCopyId)
+    {
+        var bookCopy = _dbContext.BookCopies.Include(b => b.Book).Include(b => b.Member).SingleOrDefault(x => x.Id == bookCopyId);
+        //book.NumOfAvailableCopies -= 1;
+        bookCopy.Member = null;
+        _dbContext.SaveChanges();
+        
+        var book = _dbContext.Books.Include(b => b.Copies).Include("Copies.Member").SingleOrDefault(b => b.Id == bookCopy.Book.Id);
+        return View("CopiesOfBook", book);
+    }
+    
+    [HttpGet]
     public IActionResult CheckoutBook(BookCopy memberId)
     {
         using (var context = new EFCore())
@@ -355,6 +367,8 @@ public class BookController : Controller
 
        return View("CopiesOfBook", book);
     }
+    
+
 
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
