@@ -108,7 +108,7 @@ public class BookController : Controller
             _dbContext.SaveChanges();
 
             
-            var AllBooksList = new ListOfBooks();
+            var AllBooksList = new ListOfBooksForCatalogue();
             AllBooksList.AllBooks = _dbContext.Books.ToList().OrderBy(x => x.Searches).ToList();
             AllBooksList.AllBooks = Enumerable.Reverse(AllBooksList.AllBooks).ToList();
 

@@ -41,7 +41,7 @@
                     <td>@eachBook.NumOfAvailableCopies</td>
                     <td>@eachBook.Searches</td>
                     
-                    <td><input type="button" class="bg-primary p-2 rounded-1 value="View Copies" onclick="location.href='@Url.Action("CopiesOfBook", "Book", new {bookId = @eachBook.Id })'" /></td>
+                    <td><input type="button" class="bg-primary p-2 rounded-1" value="View Copies" onclick="location.href='@Url.Action("CopiesOfBook", "Book", new {bookId = @eachBook.Id })'" /></td>
                     <td><input type="button" class="bg-primary p-2 rounded-1" value="Edit" onclick="location.href='@Url.Action("EditBook", "Book", new {bookId = @eachBook.Id })'" /></td>
                     <td><input type="button" class="bg-primary p-2 rounded-1" value="Delete" onclick="location.href='@Url.Action("DeleteBook", "Book", new {bookId = @eachBook.Id })'" /></td>
                 </tr>
