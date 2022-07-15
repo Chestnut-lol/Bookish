@@ -11,9 +11,22 @@
 <div class="row">
     <table>
         <tr>
-            <th>Member ID</th>
-            <th>Name </th>
-            <th>Email</th>
+            <th>Member ID
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "MemberId" })>
+                    <i class="bi bi-sort-numeric-down"></i>
+                </a>
+                </th>
+            <th>Name 
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "Name" })>
+                    <i class="bi bi-sort-alpha-down"></i>
+                </a>
+                </th>
+            <th>Email
+                <a href=@Url.Action("SortCatalogue", "Member", new { by = "Email" })>
+                    <i class="bi bi-sort-alpha-down"></i>
+                </a>
+                </th>
+            
             <th>View details</th>
             
         </tr>
