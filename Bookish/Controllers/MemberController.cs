@@ -70,7 +70,7 @@ public class MemberController : Controller
     }
     
     
-    [HttpGet]
+    [HttpPost]
     public IActionResult MemberQuery(Member member)
     {
         if (member.MemberId != null)
