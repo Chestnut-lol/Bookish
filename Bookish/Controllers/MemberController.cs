@@ -33,7 +33,7 @@ public class MemberController : Controller
     [HttpGet]
     public IActionResult MemberCatalogue()
     {
-        return View(_dbContext.Members.ToList());
+        return View(new MemberCatalogueModel(_dbContext.Members.ToList()));
     }
     
     
